@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담 관리 시스템</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body { margin: 0; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { Phone, User, Copy, Check, Send, RefreshCw, Save } = lucide;
+        
+        // Supabase 설정 - Sangyo 프로젝트
+        const SUPABASE_URL = 'https://fsviqmumvhrtbztdgjsu.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzdmlxbXVtdmhydGJ6dGRnanN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5NjI2NTYsImV4cCI6MjA3MDUzODY1Nn0.CXjay7-p0Psu3dYRToI77dBAt0zoHiht468dJKP-Jkk';
+
+        const ConsultationManagementSystem = () => {
+            const [consultantName, setConsultantName] = useState('');
+            const [tempName, setTempName] = useState('');
+            const [phoneNumber, setPhoneNumber] = useState('');
+            const [pendingReports, setPendingReports] = useState([]);
+            const [completedReports, setCompletedReports] = useState([]);
+            const [copySuccess, setCopySuccess] = useState(false);
+            const [isLoading, setIsLoading] = useState(false);
+            const [isSaving, setIsSaving] = useState(false);
+            const [lastUpdate, setLastUpdate] = useState(new Date());
+            const [showNameInput, setShowNameInput] = useState(false);
+
+            // Supabase REST API로 데이터 가져오기
+            const fetchFromSupabase = async () => {
+                setIsLoading(true);
+                try {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    const response = await fetch(
+                        `${SUPABASE_URL}/rest/v1/consultations?created_at=gte.${today.toISOString()}&order=created_at.desc`,
+                        {
+                            headers: {
+                                'apikey': SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                                'Content-Type': 'application/json',
+                                'Prefer': 'return=representation'
+                            }
+                        }
+                    );
+                    
+                    if (!response.ok) throw new Error('데이터 가져오기 실패');
+                    
+                    const data = await response.json();
+                    
+                    setPendingReports(data.filter(item => !item.reported));
+                    setCompletedReports(data.filter(item => item.reported));
+                    setLastUpdate(new Date());
+                } catch (error) {
+                    console.error('데이터 가져오기 실패:', error);
+                    setPendingReports([]);
+                    setCompletedReports([]);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            // 컴포넌트 마운트 시 데이터 로드 및 10초마다 자동 새로고침
+            useEffect(() => {
+                fetchFromSupabase();
+                const interval = setInterval(fetchFromSupabase, 10000);
+                return () => clearInterval(interval);
+            }, []);
+
+            // 저장된 이름 불러오기
+            useEffect(() => {
+                const saved = localStorage.getItem('consultantName');
+                if (saved) {
+                    setConsultantName(saved);
+                    setTempName(saved);
+                } else {
+                    setShowNameInput(true);
+                }
+            }, []);
+
+            // 전화번호 형식화
+            const formatPhoneNumber = (value) => {
+                const numbers = value.replace(/[^0-9]/g, '');
+                if (numbers.length <= 3) return numbers;
+                if (numbers.length <= 7) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+                return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+            };
+
+            // Supabase REST API로 저장
+            const saveToSupabase = async (phoneNum) => {
+                try {
+                    const newConsultation = {
+                        phone_number: phoneNum,
+                        consultant_name: consultantName,
+                        type: '상담요청 → 가망상담',
+                        recruiter: '유치자공란',
+                        reported: false
+                    };
+
+                    const response = await fetch(
+                        `${SUPABASE_URL}/rest/v1/consultations`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'apikey': SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                                'Content-Type': 'application/json',
+                                'Prefer': 'return=representation'
+                            },
+                            body: JSON.stringify(newConsultation)
+                        }
+                    );
+                    
+                    if (!response.ok) throw new Error('저장 실패');
+                    
+                    await fetchFromSupabase();
+                    return true;
+                } catch (error) {
+                    console.error('저장 실패:', error);
+                    alert('저장에 실패했습니다. 다시 시도해주세요.');
+                    return false;
+                }
+            };
+
+            // 상담 추가
+            const addConsultation = async () => {
+                if (!phoneNumber || phoneNumber.length < 12) {
+                    alert('올바른 전화번호를 입력해주세요');
+                    return;
+                }
+                
+                if (!consultantName) {
+                    alert('먼저 상담사 이름을 설정해주세요');
+                    setShowNameInput(true);
+                    return;
+                }
+
+                setIsSaving(true);
+                const success = await saveToSupabase(phoneNumber);
+                if (success) {
+                    setPhoneNumber('');
+                }
+                setIsSaving(false);
+            };
+
+            // 상담사 이름 저장
+            const saveConsultantName = () => {
+                if (!tempName.trim()) {
+                    alert('상담사 이름을 입력해주세요');
+                    return;
+                }
+                setConsultantName(tempName);
+                localStorage.setItem('consultantName', tempName);
+                setShowNameInput(false);
+                alert(`상담사 이름이 "${tempName}"(으)로 설정되었습니다`);
+            };
+
+            // 보고용 텍스트 생성
+            const getReportFormatted = () => {
+                return pendingReports.map(c => 
+                    `${c.phone_number} / ${c.type} / ${c.recruiter} / ${c.consultant_name} 건`
+                ).join('\n');
+            };
+
+            // 복사 및 보고완료 처리
+            const copyAndMarkAsReported = async () => {
+                const text = getReportFormatted();
+                if (!text) {
+                    alert('복사할 미보고 건이 없습니다');
+                    return;
+                }
+                
+                try {
+                    await navigator.clipboard.writeText(text);
+                    
+                    const reportIds = pendingReports.map(p => p.id);
+                    
+                    const updatePromises = reportIds.map(id =>
+                        fetch(
+                            `${SUPABASE_URL}/rest/v1/consultations?id=eq.${id}`,
+                            {
+                                method: 'PATCH',
+                                headers: {
+                                    'apikey': SUPABASE_ANON_KEY,
+                                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                                    'Content-Type': 'application/json',
+                                    'Prefer': 'return=representation'
+                                },
+                                body: JSON.stringify({ 
+                                    reported: true, 
+                                    reported_at: new Date().toISOString() 
+                                })
+                            }
+                        )
+                    );
+                    
+                    await Promise.all(updatePromises);
+                    
+                    setCopySuccess(true);
+                    setTimeout(() => setCopySuccess(false), 2000);
+                    await fetchFromSupabase();
+                } catch (error) {
+                    console.error('복사 및 업데이트 실패:', error);
+                    alert('처리 중 오류가 발생했습니다.');
+                }
+            };
+
+            const Icon = ({ icon: IconComponent, className }) => {
+                return React.createElement(IconComponent, { 
+                    size: 20,
+                    className: className
+                });
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-900 text-gray-100 p-4">
+                    <div className="max-w-4xl mx-auto">
+                        {/* 헤더 */}
+                        <div className="bg-gray-800 rounded-xl shadow-2xl p-6 mb-6 border border-gray-700">
+                            <div className="flex justify-between items-center mb-4">
+                                <h1 className="text-2xl font-bold text-white">상담 관리 시스템</h1>
+                                <button
+                                    onClick={fetchFromSupabase}
+                                    className={`p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all ${isLoading ? 'animate-spin' : ''}`}
+                                    title="새로고침"
+                                >
+                                    <Icon icon={RefreshCw} className="text-gray-300" />
+                                </button>
+                            </div>
+                            
+                            {/* 상담사 이름 설정 */}
+                            {showNameInput ? (
+                                <div className="flex gap-2">
+                                    <div className="relative flex-1">
+                                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                                            <Icon icon={User} className="text-gray-400" />
+                                        </div>
+                                        <input
+                                            type="text"
+                                            value={tempName}
+                                            onChange={(e) => setTempName(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && saveConsultantName()}
+                                            placeholder="상담사 이름을 입력하세요"
+                                            className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
+                                        />
+                                    </div>
+                                    <button
+                                        onClick={saveConsultantName}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                                    >
+                                        <Icon icon={Save} />
+                                        저장
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex justify-between items-center">
+                                    <p className="text-gray-300">
+                                        담당: <span className="font-semibold text-white">{consultantName}</span>
+                                    </p>
+                                    <button
+                                        onClick={() => {
+                                            setTempName(consultantName);
+                                            setShowNameInput(true);
+                                        }}
+                                        className="text-sm text-blue-400 hover:text-blue-300"
+                                    >
+                                        이름 변경
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* 전화번호 입력 */}
+                        <div className="bg-gray-800 rounded-xl shadow-2xl p-6 mb-6 border border-gray-700">
+                            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-200">
+                                <Icon icon={Phone} className="text-blue-400" />
+                                상담 등록
+                            </h2>
+                            <div className="flex gap-3">
+                                <input
+                                    type="tel"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(formatPhoneNumber(e.target.value))}
+                                    onKeyPress={(e) => e.key === 'Enter' && !isSaving && addConsultation()}
+                                    placeholder="전화번호 입력 (010-0000-0000)"
+                                    className="flex-1 px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                    maxLength="13"
+                                    disabled={isSaving}
+                                />
+                                <button
+                                    onClick={addConsultation}
+                                    disabled={isSaving}
+                                    className={`px-8 py-3 rounded-lg font-medium shadow-lg transition-all ${
+                                        isSaving 
+                                            ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                                            : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-blue-600/30'
+                                    }`}
+                                >
+                                    {isSaving ? '저장 중...' : '등록'}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* 미보고 건 (보고용) */}
+                        {pendingReports.length > 0 && (
+                            <div className="bg-gray-800 border-2 border-blue-600/50 rounded-xl p-6 mb-6 shadow-2xl">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                                            <Icon icon={Send} className="text-blue-400" />
+                                            메신저 보고용
+                                        </h3>
+                                        <p className="text-sm text-gray-400 mt-1">
+                                            {pendingReports.length}건의 미보고 상담
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={copyAndMarkAsReported}
+                                        className={`px-6 py-3 rounded-lg transition-all flex items-center gap-2 font-medium shadow-lg ${
+                                            copySuccess 
+                                                ? 'bg-green-600 text-white shadow-green-600/30' 
+                                                : 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/30'
+                                        }`}
+                                    >
+                                        {copySuccess ? (
+                                            <>
+                                                <Icon icon={Check} />
+                                                복사 및 발송완료!
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Icon icon={Copy} />
+                                                복사하기
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                                <div className="bg-gray-900 p-4 rounded-lg border border-gray-700">
+                                    <pre className="text-sm font-mono text-gray-300 whitespace-pre-wrap">
+                                        {getReportFormatted()}
+                                    </pre>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 빈 상태 */}
+                        {pendingReports.length === 0 && (
+                            <div className="bg-gray-800 rounded-xl p-8 text-center border border-gray-700">
+                                <Icon icon={Send} className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+                                <p className="text-gray-400">보고할 새로운 상담이 없습니다</p>
+                                <p className="text-sm text-gray-500 mt-2">
+                                    마지막 업데이트: {lastUpdate.toLocaleTimeString('ko-KR')}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* 기 발송건 (당일) */}
+                        {completedReports.length > 0 && (
+                            <div className="bg-gray-800 rounded-xl shadow-2xl p-6 border border-gray-700">
+                                <h3 className="text-lg font-semibold text-gray-300 mb-4 flex items-center gap-2">
+                                    <Icon icon={Check} className="text-green-400" />
+                                    기 발송건 (오늘 {completedReports.length}건)
+                                </h3>
+                                <div className="space-y-2 max-h-96 overflow-y-auto">
+                                    {completedReports.map((item) => (
+                                        <div key={item.id} className="text-sm text-gray-500 py-2 px-3 bg-gray-900 rounded border border-gray-700">
+                                            {item.phone_number} / {item.consultant_name} 건 
+                                            <span className="text-xs ml-2 text-gray-600">
+                                                ({new Date(item.reported_at || item.created_at).toLocaleTimeString('ko-KR')})
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Supabase 연동 상태 */}
+                        <div className="mt-6 bg-green-900/30 border border-green-600/50 rounded-xl p-4">
+                            <p className="text-green-400 text-sm">
+                                ✅ Supabase 프로젝트 "Sangyo" 연동 중 (10초마다 자동 새로고침)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<ConsultationManagementSystem />, document.getElementById('root'));
+    </script>
+</body>
+</html>
