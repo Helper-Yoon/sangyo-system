@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상담 관리 시스템</title>
+    <title>가망상담건 유치자변경 보고시스템</title>
     <style>
         * {
             margin: 0;
@@ -112,7 +112,7 @@
         }
         
         .btn-secondary {
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             background-color: #374151;
             font-size: 0.875rem;
         }
@@ -226,17 +226,18 @@
         
         .completed-item {
             font-size: 0.875rem;
-            color: #6b7280;
-            padding: 0.5rem 0.75rem;
+            color: #9ca3af;
+            padding: 0.75rem;
             background-color: #111827;
             border-radius: 0.25rem;
             border: 1px solid #374151;
             margin-bottom: 0.5rem;
+            line-height: 1.5;
         }
         
         .completed-item .time {
             font-size: 0.75rem;
-            color: #4b5563;
+            color: #6b7280;
             margin-left: 0.5rem;
         }
         
@@ -262,7 +263,7 @@
         <!-- 헤더 -->
         <div class="card">
             <div class="header">
-                <h1>상담 관리 시스템</h1>
+                <h1>가망상담건 유치자변경 보고시스템</h1>
                 <button class="btn-refresh" onclick="fetchData()" id="refreshBtn">
                     <span class="icon">🔄</span>
                 </button>
@@ -296,7 +297,8 @@
         
         <!-- 기 발송건 -->
         <div id="completedSection" class="card" style="display: none;">
-            <h3><span class="icon">✅</span> 기 발송건 (<span id="completedCount">0</span>건)</h3>
+            <h3><span class="icon">✅</span> 기 발송건 - 누락 확인용 (<span id="completedCount">0</span>건)</h3>
+            <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">혹시 누락된 건이 있는지 확인하세요</p>
             <div class="completed-list" id="completedList">
                 <!-- 동적으로 생성됨 -->
             </div>
@@ -313,9 +315,11 @@
         let pendingReports = [];
         let completedReports = [];
         let isSaving = false;
+        let isAuthorized = false;  // 권한 상태 추가
         
         // 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            checkAuthorization();
             loadConsultantName();
             fetchData();
             setInterval(fetchData, 10000);
@@ -331,6 +335,25 @@
                 }
             });
         });
+        
+        // 권한 확인
+        function checkAuthorization() {
+            const auth = sessionStorage.getItem('authorized');
+            isAuthorized = auth === 'true';
+        }
+        
+        // 로그인
+        function login() {
+            const password = prompt('복사 권한을 위한 비밀번호를 입력하세요:');
+            if (password === '3504') {
+                isAuthorized = true;
+                sessionStorage.setItem('authorized', 'true');
+                alert('권한이 부여되었습니다.');
+                updateUI();
+            } else if (password) {
+                alert('비밀번호가 올바르지 않습니다.');
+            }
+        }
         
         // 상담사 이름 로드
         function loadConsultantName() {
@@ -485,6 +508,11 @@
         
         // 복사 및 보고완료
         async function copyAndReport() {
+            if (!isAuthorized) {
+                login();
+                return;
+            }
+            
             const text = pendingReports.map(c => 
                 `${c.phone_number} / ${c.type} / ${c.recruiter} / ${c.consultant_name} 건`
             ).join('\n');
@@ -546,6 +574,14 @@
                     `${c.phone_number} / ${c.type} / ${c.recruiter} / ${c.consultant_name} 건`
                 ).join('\n');
                 
+                const buttonHTML = isAuthorized ? 
+                    `<button class="btn-copy" id="copyBtn" onclick="copyAndReport()">
+                        <span class="icon">📋</span> 복사하기
+                    </button>` :
+                    `<button class="btn-secondary" onclick="login()">
+                        🔒 복사 권한 획득
+                    </button>`;
+                
                 document.getElementById('pendingSection').innerHTML = `
                     <div class="report-box">
                         <div class="report-header">
@@ -555,9 +591,7 @@
                                     ${pendingReports.length}건의 미보고 상담
                                 </p>
                             </div>
-                            <button class="btn-copy" id="copyBtn" onclick="copyAndReport()">
-                                <span class="icon">📋</span> 복사하기
-                            </button>
+                            ${buttonHTML}
                         </div>
                         <div class="report-content">
                             <pre>${reportText}</pre>
@@ -576,7 +610,7 @@
                 
                 const listHTML = completedReports.map(item => `
                     <div class="completed-item">
-                        ${item.phone_number} / ${item.consultant_name} 건
+                        ${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건
                         <span class="time">(${new Date(item.reported_at || item.created_at).toLocaleTimeString('ko-KR')})</span>
                     </div>
                 `).join('');
