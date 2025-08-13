@@ -67,6 +67,146 @@
             display: inline-block;
         }
         
+        /* 팀 선택 화면 스타일 */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .team-selection {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            width: 100%;
+            padding: 2rem;
+        }
+        
+        .team-card {
+            background: linear-gradient(135deg, #0a0a0a 0%, #0d0d0d 100%);
+            border: 2px solid #1a1a1a;
+            border-radius: 1rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #004EA2, #0066CC, #004EA2);
+            border-radius: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            border-color: #004EA2;
+            box-shadow: 0 15px 40px rgba(0, 78, 162, 0.4);
+        }
+        
+        .team-card:hover .team-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 20px rgba(0, 78, 162, 0.5));
+        }
+        
+        .team-card:hover::before {
+            opacity: 1;
+        }
+        
+        .team-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+            transition: all 0.3s;
+        }
+        
+        .team-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 78, 162, 0.2);
+        }
+        
+        /* 팀 배지 스타일 */
+        .team-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #004EA2 0%, #0066CC 100%);
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 78, 162, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .team-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .team-switcher {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-switch-team {
+            padding: 0.5rem 1rem;
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 0.5rem;
+            color: #808080;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-switch-team:hover {
+            background: #262626;
+            border-color: #004EA2;
+            color: #0066CC;
+            box-shadow: 0 0 10px rgba(0, 78, 162, 0.2);
+        }
+        
         .input-group {
             display: flex;
             gap: 0.75rem;
@@ -314,7 +454,6 @@
             to { transform: rotate(360deg); }
         }
         
-        /* 추가 애니메이션 효과 */
         @keyframes pulse-blue {
             0%, 100% {
                 box-shadow: 0 0 0 0 rgba(0, 78, 162, 0.4);
@@ -330,14 +469,51 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- 팀 선택 화면 -->
+    <div id="teamSelection" class="team-selection" style="display: none;">
+        <div>
+            <h1 style="text-align: center; margin-bottom: 3rem; font-size: 2rem; background: linear-gradient(135deg, #ffffff 0%, #004EA2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none;">✨ 소속 팀을 선택하세요 ✨</h1>
+            <div class="team-grid">
+                <div class="team-card" onclick="selectTeam('SNS 1팀')" style="animation: fadeIn 0.5s ease 0.1s both;">
+                    <div class="team-icon">🚀</div>
+                    <div class="team-name">SNS 1팀</div>
+                </div>
+                <div class="team-card" onclick="selectTeam('SNS 2팀')" style="animation: fadeIn 0.5s ease 0.2s both;">
+                    <div class="team-icon">⭐</div>
+                    <div class="team-name">SNS 2팀</div>
+                </div>
+                <div class="team-card" onclick="selectTeam('SNS 3팀')" style="animation: fadeIn 0.5s ease 0.3s both;">
+                    <div class="team-icon">💎</div>
+                    <div class="team-name">SNS 3팀</div>
+                </div>
+                <div class="team-card" onclick="selectTeam('SNS 4팀')" style="animation: fadeIn 0.5s ease 0.4s both;">
+                    <div class="team-icon">🔥</div>
+                    <div class="team-name">SNS 4팀</div>
+                </div>
+                <div class="team-card" onclick="selectTeam('의정부 SNS팀')" style="animation: fadeIn 0.5s ease 0.5s both;">
+                    <div class="team-icon">🏆</div>
+                    <div class="team-name">의정부 SNS팀</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 메인 컨테이너 -->
+    <div id="mainContainer" class="container" style="display: none;">
         <!-- 헤더 -->
         <div class="card">
             <div class="header">
                 <h1>가망상담건 유치자변경 보고시스템</h1>
-                <button class="btn-refresh" onclick="fetchData()" id="refreshBtn">
-                    <span class="icon">🔄</span>
-                </button>
+                <div class="team-switcher">
+                    <div class="team-badge">
+                        <span class="icon" id="teamIcon">✨</span>
+                        <span id="currentTeam">팀 미선택</span>
+                    </div>
+                    <button class="btn-switch-team" onclick="showTeamSelection()">팀 변경</button>
+                    <button class="btn-refresh" onclick="fetchData()" id="refreshBtn">
+                        <span class="icon">🔄</span>
+                    </button>
+                </div>
             </div>
             
             <!-- 상담사 이름 -->
@@ -387,34 +563,92 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzdmlxbXVtdmhydGJ6dGRnanN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5NjI2NTYsImV4cCI6MjA3MDUzODY1Nn0.CXjay7-p0Psu3dYRToI77dBAt0zoHiht468dJKP-Jkk';
         
         // 전역 상태
+        let currentTeam = '';
         let consultantName = '';
         let pendingReports = [];
         let completedReports = [];
         let isSaving = false;
-        let isAuthorized = false;  // 권한 상태 추가
+        let isAuthorized = false;
+        let autoRefreshInterval;
+        
+        // 팀별 아이콘 설정
+        const teamIcons = {
+            'SNS 1팀': '🚀',
+            'SNS 2팀': '⭐',
+            'SNS 3팀': '💎',
+            'SNS 4팀': '🔥',
+            '의정부 SNS팀': '🏆'
+        };
         
         // 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            const savedTeam = localStorage.getItem('selectedTeam');
+            if (savedTeam) {
+                selectTeam(savedTeam);
+            } else {
+                showTeamSelection();
+            }
+        });
+        
+        // 팀 선택 화면 표시
+        function showTeamSelection() {
+            document.getElementById('teamSelection').style.display = 'flex';
+            document.getElementById('mainContainer').style.display = 'none';
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        }
+        
+        // 팀 선택
+        function selectTeam(teamName) {
+            currentTeam = teamName;
+            localStorage.setItem('selectedTeam', teamName);
+            
+            // 팀별로 다른 상담사 이름 로드
+            consultantName = localStorage.getItem(`consultantName_${teamName}`) || '';
+            
+            // UI 업데이트
+            document.getElementById('currentTeam').textContent = teamName;
+            document.getElementById('teamIcon').textContent = teamIcons[teamName] || '✨';
+            
+            // 화면 전환
+            document.getElementById('teamSelection').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+            
+            // 초기화
             checkAuthorization();
             loadConsultantName();
             fetchData();
-            setInterval(fetchData, 10000);
             
-            // 전화번호 입력 이벤트
-            document.getElementById('phoneInput').addEventListener('input', function(e) {
+            // 자동 새로고침 설정
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            autoRefreshInterval = setInterval(fetchData, 10000);
+            
+            // 이벤트 리스너 설정
+            const phoneInput = document.getElementById('phoneInput');
+            phoneInput.value = '';
+            
+            // 기존 이벤트 리스너 제거
+            const newPhoneInput = phoneInput.cloneNode(true);
+            phoneInput.parentNode.replaceChild(newPhoneInput, phoneInput);
+            
+            // 새 이벤트 리스너 추가
+            newPhoneInput.addEventListener('input', function(e) {
                 e.target.value = formatPhoneNumber(e.target.value);
             });
             
-            document.getElementById('phoneInput').addEventListener('keypress', function(e) {
+            newPhoneInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && !isSaving) {
                     addConsultation();
                 }
             });
-        });
+        }
         
         // 권한 확인
         function checkAuthorization() {
-            const auth = sessionStorage.getItem('authorized');
+            const auth = sessionStorage.getItem(`authorized_${currentTeam}`);
             isAuthorized = auth === 'true';
         }
         
@@ -423,9 +657,9 @@
             const password = prompt('복사 권한을 위한 비밀번호를 입력하세요:');
             if (password === '3504') {
                 isAuthorized = true;
-                sessionStorage.setItem('authorized', 'true');
+                sessionStorage.setItem(`authorized_${currentTeam}`, 'true');
                 alert('권한이 부여되었습니다.');
-                updateUI();  // UI 즉시 업데이트
+                updateUI();
             } else if (password) {
                 alert('비밀번호가 올바르지 않습니다.');
             }
@@ -433,7 +667,7 @@
         
         // 상담사 이름 로드
         function loadConsultantName() {
-            const saved = localStorage.getItem('consultantName');
+            const saved = localStorage.getItem(`consultantName_${currentTeam}`);
             if (saved) {
                 consultantName = saved;
                 showNameDisplay();
@@ -474,9 +708,9 @@
                 return;
             }
             consultantName = input.value.trim();
-            localStorage.setItem('consultantName', consultantName);
+            localStorage.setItem(`consultantName_${currentTeam}`, consultantName);
             showNameDisplay();
-            alert(`상담사 이름이 "${consultantName}"(으)로 설정되었습니다`);
+            alert(`${currentTeam} 상담사 이름이 "${consultantName}"(으)로 설정되었습니다`);
         }
         
         // 전화번호 형식화
@@ -489,6 +723,8 @@
         
         // 데이터 가져오기
         async function fetchData() {
+            if (!currentTeam) return;
+            
             const btn = document.getElementById('refreshBtn');
             btn.classList.add('rotating');
             
@@ -496,8 +732,9 @@
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
                 
+                // 팀별로 필터링된 데이터 가져오기
                 const response = await fetch(
-                    `${SUPABASE_URL}/rest/v1/consultations?created_at=gte.${today.toISOString()}&order=created_at.desc`,
+                    `${SUPABASE_URL}/rest/v1/consultations?team=eq.${encodeURIComponent(currentTeam)}&created_at=gte.${today.toISOString()}&order=created_at.desc`,
                     {
                         headers: {
                             'apikey': SUPABASE_ANON_KEY,
@@ -539,6 +776,12 @@
                 return;
             }
             
+            if (!currentTeam) {
+                alert('팀을 선택해주세요');
+                showTeamSelection();
+                return;
+            }
+            
             isSaving = true;
             phoneInput.disabled = true;
             addBtn.disabled = true;
@@ -560,6 +803,7 @@
                             consultant_name: consultantName,
                             type: '상담요청 → 가망상담',
                             recruiter: '유치자공란',
+                            team: currentTeam,
                             reported: false
                         })
                     }
@@ -680,7 +924,7 @@
                 return;
             }
             
-            if (!confirm('정말로 모든 기 발송건을 정리하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+            if (!confirm(`정말로 ${currentTeam}의 모든 기 발송건을 정리하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
                 return;
             }
             
@@ -700,7 +944,7 @@
                 );
                 
                 await Promise.all(deletePromises);
-                alert('기 발송건이 정리되었습니다.');
+                alert(`${currentTeam}의 기 발송건이 정리되었습니다.`);
                 await fetchData();
                 
             } catch (error) {
@@ -732,7 +976,7 @@
                     <div class="report-box">
                         <div class="report-header">
                             <div>
-                                <h3 style="margin-bottom: 0.25rem;">메신저 보고용</h3>
+                                <h3 style="margin-bottom: 0.25rem;">메신저 보고용 - ${currentTeam}</h3>
                                 <p style="font-size: 0.875rem; color: #808080; margin-top: 0.25rem;">
                                     ${pendingReports.length}건의 미보고 상담
                                 </p>
