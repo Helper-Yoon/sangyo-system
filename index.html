@@ -13,8 +13,8 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #111827;
-            color: #f3f4f6;
+            background-color: #000000;
+            color: #ffffff;
             min-height: 100vh;
             padding: 1rem;
         }
@@ -25,12 +25,12 @@
         }
         
         .card {
-            background-color: #1f2937;
+            background-color: #0a0a0a;
             border-radius: 0.75rem;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            border: 1px solid #374151;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #1a1a1a;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
         }
         
         .header {
@@ -45,13 +45,14 @@
         h1 {
             font-size: 1.5rem;
             font-weight: bold;
-            color: white;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 78, 162, 0.3);
         }
         
         h2 {
             font-size: 1.125rem;
             font-weight: 600;
-            color: #e5e7eb;
+            color: #e0e0e0;
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
@@ -61,7 +62,7 @@
         h3 {
             font-size: 1.125rem;
             font-weight: 600;
-            color: #d1d5db;
+            color: #ffffff;
             margin-bottom: 0;
             display: inline-block;
         }
@@ -74,17 +75,19 @@
         input[type="text"], input[type="tel"] {
             flex: 1;
             padding: 0.75rem 1rem;
-            background-color: #374151;
-            border: 1px solid #4b5563;
+            background-color: #0d0d0d;
+            border: 1px solid #1a1a1a;
             border-radius: 0.5rem;
             color: white;
             font-size: 1rem;
+            transition: all 0.3s;
         }
         
         input:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #004EA2;
+            box-shadow: 0 0 0 3px rgba(0, 78, 162, 0.2), 0 0 20px rgba(0, 78, 162, 0.1);
+            background-color: #0f0f0f;
         }
         
         input:disabled {
@@ -94,47 +97,60 @@
         
         button {
             padding: 0.75rem 2rem;
-            background-color: #3b82f6;
+            background: linear-gradient(135deg, #004EA2 0%, #0066CC 100%);
             color: white;
             border: none;
             border-radius: 0.5rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 78, 162, 0.3);
         }
         
         button:hover:not(:disabled) {
-            background-color: #2563eb;
-            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, #0066CC 0%, #004EA2 100%);
+            box-shadow: 0 6px 20px rgba(0, 78, 162, 0.5);
+            transform: translateY(-2px);
         }
         
         button:disabled {
-            background-color: #4b5563;
-            color: #9ca3af;
+            background: #1a1a1a;
+            color: #666666;
             cursor: not-allowed;
+            box-shadow: none;
         }
         
         .btn-secondary {
             padding: 0.5rem 1rem;
-            background-color: #374151;
+            background: #1a1a1a;
             font-size: 0.875rem;
             display: inline-flex;
             align-items: center;
             gap: 0.25rem;
+            border: 1px solid #333333;
+            box-shadow: none;
         }
         
         .btn-secondary:hover:not(:disabled) {
-            background-color: #4b5563;
+            background: #262626;
+            border-color: #004EA2;
+            transform: none;
+            box-shadow: 0 0 10px rgba(0, 78, 162, 0.2);
         }
         
         .btn-refresh {
             padding: 0.5rem;
-            background-color: #374151;
+            background: #1a1a1a;
             border-radius: 0.5rem;
+            border: 1px solid #333333;
+            box-shadow: none;
         }
         
         .btn-refresh:hover {
-            background-color: #4b5563;
+            background: #262626;
+            border-color: #004EA2;
+            transform: none;
+            box-shadow: 0 0 10px rgba(0, 78, 162, 0.2);
         }
         
         .btn-copy {
@@ -145,11 +161,11 @@
         }
         
         .btn-success {
-            background-color: #10b981;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
         
         .btn-success:hover {
-            background-color: #059669;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
         }
         
         .name-display {
@@ -159,33 +175,37 @@
         }
         
         .name-display p {
-            color: #d1d5db;
+            color: #b0b0b0;
         }
         
         .name-display span {
             font-weight: 600;
-            color: white;
+            color: #004EA2;
+            text-shadow: 0 0 5px rgba(0, 78, 162, 0.3);
         }
         
         .name-display button {
             padding: 0.25rem 0.5rem;
             background: none;
-            color: #60a5fa;
+            color: #0066CC;
             font-size: 0.875rem;
+            box-shadow: none;
         }
         
         .name-display button:hover {
-            color: #93bbfc;
+            color: #4da6ff;
             background: none;
+            transform: none;
+            box-shadow: none;
         }
         
         .report-box {
-            background-color: #1f2937;
-            border: 2px solid rgba(59, 130, 246, 0.5);
+            background-color: #0a0a0a;
+            border: 2px solid #004EA2;
             border-radius: 0.75rem;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px -10px rgba(0, 78, 162, 0.2), 0 0 30px rgba(0, 78, 162, 0.1);
         }
         
         .report-header {
@@ -196,16 +216,16 @@
         }
         
         .report-content {
-            background-color: #111827;
+            background-color: #000000;
             padding: 1rem;
             border-radius: 0.5rem;
-            border: 1px solid #374151;
+            border: 1px solid #1a1a1a;
         }
         
         pre {
             font-family: 'Courier New', monospace;
             font-size: 0.875rem;
-            color: #d1d5db;
+            color: #e0e0e0;
             white-space: pre-wrap;
             word-wrap: break-word;
         }
@@ -213,46 +233,69 @@
         .empty-state {
             text-align: center;
             padding: 2rem;
+            background: linear-gradient(135deg, #0a0a0a 0%, #0d0d0d 100%);
         }
         
         .empty-state p {
-            color: #9ca3af;
+            color: #808080;
             margin-bottom: 0.5rem;
         }
         
         .empty-state .time {
             font-size: 0.875rem;
-            color: #6b7280;
+            color: #666666;
         }
         
         .completed-list {
             max-height: 24rem;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #004EA2 #0a0a0a;
+        }
+        
+        .completed-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .completed-list::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        
+        .completed-list::-webkit-scrollbar-thumb {
+            background: #004EA2;
+            border-radius: 4px;
         }
         
         .completed-item {
             font-size: 0.875rem;
-            color: #9ca3af;
+            color: #b0b0b0;
             padding: 0.75rem;
-            background-color: #111827;
+            background-color: #050505;
             border-radius: 0.25rem;
-            border: 1px solid #374151;
+            border: 1px solid #1a1a1a;
             margin-bottom: 0.5rem;
             line-height: 1.5;
+            transition: all 0.2s;
+        }
+        
+        .completed-item:hover {
+            border-color: #004EA2;
+            box-shadow: 0 0 10px rgba(0, 78, 162, 0.1);
         }
         
         .completed-item .time {
             font-size: 0.75rem;
-            color: #6b7280;
+            color: #666666;
             margin-left: 0.5rem;
         }
         
         .btn-danger {
-            background-color: #991b1b;
+            background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
         }
         
         .btn-danger:hover {
-            background-color: #7f1d1d;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
         }
         
         .icon {
@@ -269,6 +312,20 @@
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+        
+        /* 추가 애니메이션 효과 */
+        @keyframes pulse-blue {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(0, 78, 162, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(0, 78, 162, 0);
+            }
+        }
+        
+        .report-box {
+            animation: pulse-blue 3s infinite;
         }
     </style>
 </head>
@@ -317,7 +374,7 @@
                     <!-- 동적으로 생성됨 -->
                 </div>
             </div>
-            <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">혹시 누락된 건이 있는지 확인하세요</p>
+            <p style="font-size: 0.875rem; color: #666666; margin-bottom: 1rem;">혹시 누락된 건이 있는지 확인하세요</p>
             <div class="completed-list" id="completedList">
                 <!-- 동적으로 생성됨 -->
             </div>
@@ -676,7 +733,7 @@
                         <div class="report-header">
                             <div>
                                 <h3 style="margin-bottom: 0.25rem;">메신저 보고용</h3>
-                                <p style="font-size: 0.875rem; color: #9ca3af; margin-top: 0.25rem;">
+                                <p style="font-size: 0.875rem; color: #808080; margin-top: 0.25rem;">
                                     ${pendingReports.length}건의 미보고 상담
                                 </p>
                             </div>
