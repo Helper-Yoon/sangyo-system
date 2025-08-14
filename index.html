@@ -573,6 +573,8 @@
             margin-bottom: 1rem;
             padding-bottom: 0.75rem;
             border-bottom: 1px solid #333333;
+            flex-wrap: wrap;
+            gap: 0.75rem;
         }
         
         .team-section-title {
@@ -636,12 +638,6 @@
         .consultation-time {
             font-size: 0.75rem;
             color: #666666;
-        }
-        
-        .consultation-actions {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
         }
         
         .status-label {
@@ -1343,35 +1339,48 @@
             }
         }
         
-        // 관리자 복사 기능
-        async function copyAdminItem(item, team) {
-            const text = `${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건`;
+        // 팀의 미보고건 복사
+        async function copyTeamPending(team) {
+            const teamData = adminData[team];
+            if (!teamData || teamData.pending.length === 0) {
+                alert('복사할 미보고건이 없습니다.');
+                return;
+            }
+            
+            // 복사할 텍스트 생성
+            const textLines = teamData.pending.map(item => 
+                `${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건`
+            );
+            const fullText = textLines.join('\n');
             
             try {
-                await navigator.clipboard.writeText(text);
+                await navigator.clipboard.writeText(fullText);
                 
-                // 이력에 추가
-                const historyItem = {
-                    id: item.id,
-                    text: text,
-                    team: team,
-                    copiedAt: new Date().toISOString(),
-                    status: item.reported ? 'reported' : 'pending'
-                };
+                // 모든 항목을 이력에 추가
+                const timestamp = new Date().toISOString();
+                teamData.pending.forEach(item => {
+                    const historyItem = {
+                        id: item.id,
+                        text: `${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건`,
+                        team: team,
+                        copiedAt: timestamp,
+                        status: 'pending'
+                    };
+                    copyHistory.unshift(historyItem);
+                });
                 
-                copyHistory.unshift(historyItem);
                 localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
                 
                 // 버튼 피드백
                 const btn = event.target;
                 const originalText = btn.innerHTML;
-                btn.innerHTML = '✔️';
+                btn.innerHTML = `✔️ ${teamData.pending.length}건 복사완료!`;
                 btn.style.background = '#10b981';
                 
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.style.background = '';
-                }, 1000);
+                }, 1500);
                 
                 updateHistoryUI();
                 
@@ -1380,13 +1389,10 @@
                 alert('복사 중 오류가 발생했습니다.');
             }
         }
-        
-        // 이력 삭제
-        function deleteHistoryItem(index) {
-            if (confirm('이 이력을 삭제하시겠습니까?')) {
-                copyHistory.splice(index, 1);
-                localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
-                updateHistoryUI();
+                
+            } catch (error) {
+                console.error('복사 실패:', error);
+                alert('복사 중 오류가 발생했습니다.');
             }
         }
         
@@ -1459,6 +1465,9 @@
                 totalCompleted += teamData.completed.length;
             });
             
+            // 이력 그룹 수 계산
+            const historyGroups = new Set(copyHistory.map(item => `${item.copiedAt}_${item.team}`)).size;
+            
             document.getElementById('adminStatsSummary').innerHTML = `
                 <div class="stat-card">
                     <div class="stat-number">${totalPending}</div>
@@ -1473,7 +1482,7 @@
                     <div class="stat-label">전체 상담</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">${copyHistory.length}</div>
+                    <div class="stat-number">${historyGroups}</div>
                     <div class="stat-label">복사 이력</div>
                 </div>
             `;
@@ -1495,49 +1504,66 @@
                                 <span class="stat-badge pending">미보고: ${teamData.pending.length}</span>
                                 <span class="stat-badge completed">완료: ${teamData.completed.length}</span>
                             </div>
+                            ${teamData.pending.length > 0 ? `
+                                <button class="btn-copy-small" onclick="copyTeamPending('${team}')">
+                                    📋 미보고 복사 (${teamData.pending.length}건)
+                                </button>
+                            ` : ''}
                         </div>
                         <div class="consultation-list">
                 `;
                 
-                // 미보고 건 표시
-                teamData.pending.forEach(item => {
+                // 미보고 건 섹션
+                if (teamData.pending.length > 0) {
                     adminViewHTML += `
-                        <div class="consultation-item">
-                            <div class="consultation-text">
-                                ${item.phone_number} / ${item.consultant_name}
-                                <span class="status-label pending">미보고</span>
+                        <div style="margin-bottom: 1rem;">
+                            <div style="font-size: 0.875rem; font-weight: 600; color: #ef4444; margin-bottom: 0.5rem;">
+                                📌 미보고 건
                             </div>
-                            <div class="consultation-actions">
+                    `;
+                    
+                    teamData.pending.forEach(item => {
+                        adminViewHTML += `
+                            <div class="consultation-item">
+                                <div class="consultation-text">
+                                    ${item.phone_number} / ${item.consultant_name}
+                                    <span class="status-label pending">미보고</span>
+                                </div>
                                 <div class="consultation-time">
                                     ${new Date(item.created_at).toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'})}
                                 </div>
-                                <button class="btn-copy-small" onclick="copyAdminItem(${JSON.stringify(item).replace(/"/g, '&quot;')}, '${team}')">
-                                    📋 복사
-                                </button>
                             </div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
+                    
+                    adminViewHTML += `</div>`;
+                }
                 
-                // 기 발송건 표시
-                teamData.completed.forEach(item => {
+                // 기 발송건 섹션
+                if (teamData.completed.length > 0) {
                     adminViewHTML += `
-                        <div class="consultation-item">
-                            <div class="consultation-text">
-                                ${item.phone_number} / ${item.consultant_name}
-                                <span class="status-label reported">보고완료</span>
+                        <div style="margin-top: ${teamData.pending.length > 0 ? '1rem' : '0'}; padding-top: ${teamData.pending.length > 0 ? '1rem' : '0'}; border-top: ${teamData.pending.length > 0 ? '1px solid #333333' : 'none'};">
+                            <div style="font-size: 0.875rem; font-weight: 600; color: #10b981; margin-bottom: 0.5rem;">
+                                ✅ 기 발송건
                             </div>
-                            <div class="consultation-actions">
+                    `;
+                    
+                    teamData.completed.forEach(item => {
+                        adminViewHTML += `
+                            <div class="consultation-item" style="opacity: 0.7;">
+                                <div class="consultation-text">
+                                    ${item.phone_number} / ${item.consultant_name}
+                                    <span class="status-label reported">보고완료</span>
+                                </div>
                                 <div class="consultation-time">
                                     ${new Date(item.reported_at || item.created_at).toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'})}
                                 </div>
-                                <button class="btn-copy-small" onclick="copyAdminItem(${JSON.stringify(item).replace(/"/g, '&quot;')}, '${team}')">
-                                    📋 복사
-                                </button>
                             </div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
+                    
+                    adminViewHTML += `</div>`;
+                }
                 
                 if (teamData.all.length === 0) {
                     adminViewHTML += `
@@ -1568,30 +1594,68 @@
                 document.getElementById('historyList').style.display = 'block';
                 document.getElementById('emptyHistory').style.display = 'none';
                 
-                let historyHTML = '';
+                // 시간별로 그룹화
+                const groupedHistory = {};
                 copyHistory.forEach((item, index) => {
-                    const statusClass = item.status === 'reported' ? 'reported' : 'pending';
-                    const statusText = item.status === 'reported' ? '보고완료' : '미보고';
-                    
+                    const key = `${item.copiedAt}_${item.team}`;
+                    if (!groupedHistory[key]) {
+                        groupedHistory[key] = {
+                            team: item.team,
+                            copiedAt: item.copiedAt,
+                            items: [],
+                            indices: []
+                        };
+                    }
+                    groupedHistory[key].items.push(item);
+                    groupedHistory[key].indices.push(index);
+                });
+                
+                let historyHTML = '';
+                Object.values(groupedHistory).forEach(group => {
                     historyHTML += `
-                        <div class="history-item">
-                            <div class="history-text">
-                                [${item.team}] ${item.text}
-                                <span class="status-label ${statusClass}">${statusText}</span>
-                            </div>
-                            <div class="history-meta">
-                                <div class="history-time">
-                                    ${new Date(item.copiedAt).toLocaleString('ko-KR')}
+                        <div class="history-item" style="padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                                <div>
+                                    <strong style="color: #ffffff; font-size: 1rem;">
+                                        ${teamIcons[group.team] || '📁'} ${group.team}
+                                    </strong>
+                                    <span style="margin-left: 0.5rem; font-size: 0.875rem; color: #808080;">
+                                        (미보고 ${group.items.length}건)
+                                    </span>
+                                    <span class="status-label pending">복사완료</span>
                                 </div>
-                                <button class="btn-danger-small" onclick="deleteHistoryItem(${index})">
-                                    🗑️ 삭제
-                                </button>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div class="history-time">
+                                        ${new Date(group.copiedAt).toLocaleString('ko-KR')}
+                                    </div>
+                                    <button class="btn-danger-small" onclick="deleteHistoryGroup('${group.copiedAt}', '${group.team}')">
+                                        🗑️ 삭제
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="background: #000000; padding: 0.5rem; border-radius: 0.25rem; border: 1px solid #1a1a1a;">
+                                ${group.items.map(item => `
+                                    <div style="font-size: 0.75rem; color: #b0b0b0; line-height: 1.5;">
+                                        ${item.text}
+                                    </div>
+                                `).join('')}
                             </div>
                         </div>
                     `;
                 });
                 
                 document.getElementById('historyList').innerHTML = historyHTML;
+            }
+        }
+        
+        // 그룹 삭제 함수
+        function deleteHistoryGroup(copiedAt, team) {
+            if (confirm('이 그룹의 모든 이력을 삭제하시겠습니까?')) {
+                copyHistory = copyHistory.filter(item => 
+                    !(item.copiedAt === copiedAt && item.team === team)
+                );
+                localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
+                updateHistoryUI();
             }
         }
     </script>
