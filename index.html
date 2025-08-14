@@ -24,6 +24,11 @@
             margin: 0 auto;
         }
         
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
         .card {
             background-color: #0a0a0a;
             border-radius: 0.75rem;
@@ -160,6 +165,16 @@
             overflow: hidden;
         }
         
+        .team-card.admin {
+            background: linear-gradient(135deg, #1a0a0a 0%, #2d0d0d 100%);
+            border-color: #8B0000;
+        }
+        
+        .team-card.admin:hover {
+            border-color: #DC143C;
+            box-shadow: 0 15px 40px rgba(220, 20, 60, 0.4);
+        }
+        
         .team-card.disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -177,6 +192,10 @@
             opacity: 0;
             transition: opacity 0.3s;
             z-index: -1;
+        }
+        
+        .team-card.admin::before {
+            background: linear-gradient(135deg, #DC143C, #8B0000, #DC143C);
         }
         
         .team-card:not(.disabled):hover {
@@ -208,6 +227,10 @@
             text-shadow: 0 0 10px rgba(0, 78, 162, 0.2);
         }
         
+        .team-card.admin .team-name {
+            text-shadow: 0 0 10px rgba(220, 20, 60, 0.3);
+        }
+        
         .team-hint {
             margin-top: 2rem;
             text-align: center;
@@ -228,6 +251,11 @@
             box-shadow: 0 4px 15px rgba(0, 78, 162, 0.3);
             position: relative;
             overflow: hidden;
+        }
+        
+        .team-badge.admin {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
         }
         
         .team-badge::before {
@@ -341,6 +369,47 @@
             box-shadow: 0 0 10px rgba(0, 78, 162, 0.2);
         }
         
+        .btn-copy-small {
+            padding: 0.375rem 0.75rem;
+            background: #004EA2;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 2px 8px rgba(0, 78, 162, 0.3);
+        }
+        
+        .btn-copy-small:hover {
+            background: #0066CC;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 78, 162, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+        }
+        
+        .btn-danger-small {
+            padding: 0.375rem 0.75rem;
+            background: #dc2626;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            border-radius: 0.375rem;
+        }
+        
+        .btn-danger-small:hover {
+            background: #ef4444;
+            transform: translateY(-1px);
+        }
+        
         .btn-refresh {
             padding: 0.5rem;
             background: #1a1a1a;
@@ -354,21 +423,6 @@
             border-color: #004EA2;
             transform: none;
             box-shadow: 0 0 10px rgba(0, 78, 162, 0.2);
-        }
-        
-        .btn-copy {
-            padding: 0.75rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-        
-        .btn-success:hover {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
         }
         
         .name-display {
@@ -492,13 +546,211 @@
             margin-left: 0.5rem;
         }
         
-        .btn-danger {
-            background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+        /* 관리자 뷰 스타일 */
+        .admin-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
         }
         
-        .btn-danger:hover {
-            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+        .team-section {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .team-section:hover {
+            border-color: #004EA2;
+            box-shadow: 0 0 20px rgba(0, 78, 162, 0.1);
+        }
+        
+        .team-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #333333;
+        }
+        
+        .team-section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .team-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: #808080;
+        }
+        
+        .stat-badge {
+            padding: 0.25rem 0.5rem;
+            background: #1a1a1a;
+            border-radius: 0.25rem;
+            border: 1px solid #333333;
+        }
+        
+        .stat-badge.pending {
+            border-color: #dc2626;
+            color: #ef4444;
+        }
+        
+        .stat-badge.completed {
+            border-color: #10b981;
+            color: #34d399;
+        }
+        
+        .consultation-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: #050505;
+            border: 1px solid #1a1a1a;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        
+        .consultation-item:hover {
+            background: #0a0a0a;
+            border-color: #333333;
+        }
+        
+        .consultation-text {
+            flex: 1;
+            color: #e0e0e0;
+            line-height: 1.4;
+        }
+        
+        .consultation-time {
+            font-size: 0.75rem;
+            color: #666666;
+        }
+        
+        .consultation-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .status-label {
+            display: inline-block;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.625rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+        
+        .status-label.pending {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .status-label.reported {
+            background: rgba(52, 211, 153, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+        
+        .admin-stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #0a0a0a 0%, #0d0d0d 100%);
+            border: 1px solid #1a1a1a;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #808080;
+        }
+        
+        /* 이력 섹션 */
+        .history-section {
+            margin-top: 2rem;
+        }
+        
+        .history-list {
+            max-height: 30rem;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #8B0000 #0a0a0a;
+        }
+        
+        .history-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .history-list::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        
+        .history-list::-webkit-scrollbar-thumb {
+            background: #8B0000;
+            border-radius: 4px;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #050505;
+            border: 1px solid #2a1a1a;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .history-item:hover {
+            background: #0a0505;
+            border-color: #8B0000;
+        }
+        
+        .history-text {
+            flex: 1;
+            color: #b0b0b0;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+        
+        .history-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .history-time {
+            font-size: 0.75rem;
+            color: #666666;
         }
         
         .icon {
@@ -572,6 +824,10 @@
                     <div class="team-icon">🏆</div>
                     <div class="team-name">의정부 SNS팀</div>
                 </div>
+                <div class="team-card admin disabled" id="teamAdmin" onclick="selectTeam('관리자')" style="animation: fadeIn 0.5s ease 0.6s both;">
+                    <div class="team-icon">👑</div>
+                    <div class="team-name">관리자</div>
+                </div>
             </div>
             
             <div class="team-hint">
@@ -580,7 +836,7 @@
         </div>
     </div>
     
-    <!-- 메인 컨테이너 -->
+    <!-- 일반 팀 메인 컨테이너 -->
     <div id="mainContainer" class="container" style="display: none;">
         <!-- 헤더 -->
         <div class="card">
@@ -628,13 +884,59 @@
         <div id="completedSection" class="card" style="display: none;">
             <div class="header">
                 <h3><span class="icon">✅</span> 기 발송건 - 누락 확인용 (<span id="completedCount">0</span>건)</h3>
-                <div id="completedButtons" style="display: flex; gap: 0.5rem;">
-                    <!-- 동적으로 생성됨 -->
-                </div>
             </div>
             <p style="font-size: 0.875rem; color: #666666; margin-bottom: 1rem;">혹시 누락된 건이 있는지 확인하세요</p>
             <div class="completed-list" id="completedList">
                 <!-- 동적으로 생성됨 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 관리자 컨테이너 -->
+    <div id="adminContainer" class="admin-container" style="display: none;">
+        <!-- 헤더 -->
+        <div class="card">
+            <div class="header">
+                <h1>🎯 관리자 대시보드</h1>
+                <div class="team-switcher">
+                    <div class="team-badge admin">
+                        <span class="icon">👑</span>
+                        <span>관리자 모드</span>
+                    </div>
+                    <button class="btn-switch-team" onclick="showTeamSelection()">팀 변경</button>
+                    <button class="btn-refresh" onclick="fetchAdminData()" id="adminRefreshBtn">
+                        <span class="icon">🔄</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 전체 통계 -->
+        <div class="card">
+            <h2>📊 전체 현황</h2>
+            <div class="admin-stats-summary" id="adminStatsSummary">
+                <!-- 동적으로 생성됨 -->
+            </div>
+        </div>
+        
+        <!-- 팀별 상담 목록 -->
+        <div class="admin-view" id="adminView">
+            <!-- 동적으로 생성됨 -->
+        </div>
+        
+        <!-- 이력 섹션 -->
+        <div class="card history-section">
+            <div class="header">
+                <h2>📜 복사 이력</h2>
+                <button class="btn-secondary btn-danger" onclick="clearAllHistory()">
+                    <span class="icon">🗑️</span> 전체 삭제
+                </button>
+            </div>
+            <div class="history-list" id="historyList">
+                <!-- 동적으로 생성됨 -->
+            </div>
+            <div id="emptyHistory" class="empty-state" style="display: none;">
+                <p>복사 이력이 없습니다</p>
             </div>
         </div>
     </div>
@@ -650,8 +952,10 @@
         let pendingReports = [];
         let completedReports = [];
         let isSaving = false;
-        let isAuthorized = false;
         let autoRefreshInterval;
+        let adminData = {};
+        let copyHistory = [];
+        let isAdminAuthorized = false;
         
         // 팀별 아이콘 설정
         const teamIcons = {
@@ -659,11 +963,18 @@
             'SNS 2팀': '⭐',
             'SNS 3팀': '💎',
             'SNS 4팀': '🔥',
-            '의정부 SNS팀': '🏆'
+            '의정부 SNS팀': '🏆',
+            '관리자': '👑'
         };
         
         // 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            // 복사 이력 로드
+            const savedHistory = localStorage.getItem('adminCopyHistory');
+            if (savedHistory) {
+                copyHistory = JSON.parse(savedHistory);
+            }
+            
             // 저장된 이름 확인
             const savedGlobalName = localStorage.getItem('globalConsultantName');
             if (savedGlobalName) {
@@ -725,6 +1036,7 @@
         function showTeamSelection() {
             document.getElementById('teamSelection').style.display = 'flex';
             document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('adminContainer').style.display = 'none';
             
             // 저장된 이름 다시 로드
             const savedGlobalName = localStorage.getItem('globalConsultantName');
@@ -738,6 +1050,9 @@
             if (autoRefreshInterval) {
                 clearInterval(autoRefreshInterval);
             }
+            
+            // 관리자 권한 초기화
+            isAdminAuthorized = false;
         }
         
         // 팀 선택
@@ -750,69 +1065,80 @@
                 return;
             }
             
-            currentTeam = teamName;
-            consultantName = nameInput;
-            
-            // localStorage에 저장
-            localStorage.setItem('selectedTeam', teamName);
-            localStorage.setItem('globalConsultantName', consultantName);
-            localStorage.setItem(`consultantName_${teamName}`, consultantName);
-            
-            // UI 업데이트
-            document.getElementById('currentTeam').textContent = teamName;
-            document.getElementById('teamIcon').textContent = teamIcons[teamName] || '✨';
-            
-            // 화면 전환
-            document.getElementById('teamSelection').style.display = 'none';
-            document.getElementById('mainContainer').style.display = 'block';
-            
-            // 초기화
-            checkAuthorization();
-            showNameDisplay();
-            fetchData();
-            
-            // 자동 새로고침 설정
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-            }
-            autoRefreshInterval = setInterval(fetchData, 10000);
-            
-            // 이벤트 리스너 설정
-            const phoneInput = document.getElementById('phoneInput');
-            phoneInput.value = '';
-            
-            // 기존 이벤트 리스너 제거
-            const newPhoneInput = phoneInput.cloneNode(true);
-            phoneInput.parentNode.replaceChild(newPhoneInput, phoneInput);
-            
-            // 새 이벤트 리스너 추가
-            newPhoneInput.addEventListener('input', function(e) {
-                e.target.value = formatPhoneNumber(e.target.value);
-            });
-            
-            newPhoneInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !isSaving) {
-                    addConsultation();
+            // 관리자 모드 체크
+            if (teamName === '관리자') {
+                // 비밀번호 확인
+                const password = prompt('관리자 비밀번호를 입력하세요:');
+                if (password !== '1250') {
+                    alert('비밀번호가 올바르지 않습니다.');
+                    return;
                 }
-            });
-        }
-        
-        // 권한 확인
-        function checkAuthorization() {
-            const auth = sessionStorage.getItem(`authorized_${currentTeam}`);
-            isAuthorized = auth === 'true';
-        }
-        
-        // 로그인
-        function login() {
-            const password = prompt('복사 권한을 위한 비밀번호를 입력하세요:');
-            if (password === '3504') {
-                isAuthorized = true;
-                sessionStorage.setItem(`authorized_${currentTeam}`, 'true');
-                alert('권한이 부여되었습니다.');
-                updateUI();
-            } else if (password) {
-                alert('비밀번호가 올바르지 않습니다.');
+                isAdminAuthorized = true;
+                
+                currentTeam = teamName;
+                consultantName = nameInput;
+                
+                // localStorage에 저장
+                localStorage.setItem('selectedTeam', teamName);
+                localStorage.setItem('globalConsultantName', consultantName);
+                
+                document.getElementById('teamSelection').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'none';
+                document.getElementById('adminContainer').style.display = 'block';
+                
+                fetchAdminData();
+                
+                // 자동 새로고침 설정
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                }
+                autoRefreshInterval = setInterval(fetchAdminData, 10000);
+            } else {
+                currentTeam = teamName;
+                consultantName = nameInput;
+                
+                // localStorage에 저장
+                localStorage.setItem('selectedTeam', teamName);
+                localStorage.setItem('globalConsultantName', consultantName);
+                localStorage.setItem(`consultantName_${teamName}`, consultantName);
+                
+                // UI 업데이트
+                document.getElementById('currentTeam').textContent = teamName;
+                document.getElementById('teamIcon').textContent = teamIcons[teamName] || '✨';
+                
+                // 화면 전환
+                document.getElementById('teamSelection').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+                document.getElementById('adminContainer').style.display = 'none';
+                
+                // 초기화
+                showNameDisplay();
+                fetchData();
+                
+                // 자동 새로고침 설정
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                }
+                autoRefreshInterval = setInterval(fetchData, 10000);
+                
+                // 이벤트 리스너 설정
+                const phoneInput = document.getElementById('phoneInput');
+                phoneInput.value = '';
+                
+                // 기존 이벤트 리스너 제거
+                const newPhoneInput = phoneInput.cloneNode(true);
+                phoneInput.parentNode.replaceChild(newPhoneInput, phoneInput);
+                
+                // 새 이벤트 리스너 추가
+                newPhoneInput.addEventListener('input', function(e) {
+                    e.target.value = formatPhoneNumber(e.target.value);
+                });
+                
+                newPhoneInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !isSaving) {
+                        addConsultation();
+                    }
+                });
             }
         }
         
@@ -904,6 +1230,53 @@
             }
         }
         
+        // 관리자 데이터 가져오기
+        async function fetchAdminData() {
+            const btn = document.getElementById('adminRefreshBtn');
+            btn.classList.add('rotating');
+            
+            try {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                // 모든 팀의 데이터 가져오기
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/consultations?created_at=gte.${today.toISOString()}&order=created_at.desc`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=representation'
+                        }
+                    }
+                );
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // 팀별로 데이터 분류
+                    adminData = {};
+                    const teams = ['SNS 1팀', 'SNS 2팀', 'SNS 3팀', 'SNS 4팀', '의정부 SNS팀'];
+                    
+                    teams.forEach(team => {
+                        const teamData = data.filter(item => item.team === team);
+                        adminData[team] = {
+                            pending: teamData.filter(item => !item.reported),
+                            completed: teamData.filter(item => item.reported),
+                            all: teamData
+                        };
+                    });
+                    
+                    updateAdminUI();
+                }
+            } catch (error) {
+                console.error('관리자 데이터 가져오기 실패:', error);
+            } finally {
+                btn.classList.remove('rotating');
+            }
+        }
+        
         // 상담 추가
         async function addConsultation() {
             const phoneInput = document.getElementById('phoneInput');
@@ -970,90 +1343,37 @@
             }
         }
         
-        // 복사 및 보고완료
-        async function copyAndReport() {
-            if (!isAuthorized) {
-                login();
-                return;
-            }
-            
-            const text = pendingReports.map(c => 
-                `${c.phone_number} / ${c.type} / ${c.recruiter} / ${c.consultant_name} 건`
-            ).join('\n');
-            
-            if (!text) {
-                alert('복사할 미보고 건이 없습니다');
-                return;
-            }
+        // 관리자 복사 기능
+        async function copyAdminItem(item, team) {
+            const text = `${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건`;
             
             try {
                 await navigator.clipboard.writeText(text);
                 
-                const reportIds = pendingReports.map(p => p.id);
-                const updatePromises = reportIds.map(id =>
-                    fetch(
-                        `${SUPABASE_URL}/rest/v1/consultations?id=eq.${id}`,
-                        {
-                            method: 'PATCH',
-                            headers: {
-                                'apikey': SUPABASE_ANON_KEY,
-                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                                'Content-Type': 'application/json',
-                                'Prefer': 'return=representation'
-                            },
-                            body: JSON.stringify({ 
-                                reported: true, 
-                                reported_at: new Date().toISOString() 
-                            })
-                        }
-                    )
-                );
+                // 이력에 추가
+                const historyItem = {
+                    id: item.id,
+                    text: text,
+                    team: team,
+                    copiedAt: new Date().toISOString(),
+                    status: item.reported ? 'reported' : 'pending'
+                };
                 
-                await Promise.all(updatePromises);
+                copyHistory.unshift(historyItem);
+                localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
                 
-                const btn = document.getElementById('copyBtn');
-                btn.className = 'btn-copy btn-success';
-                btn.innerHTML = '<span class="icon">✔️</span> 복사 및 발송완료!';
+                // 버튼 피드백
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✔️';
+                btn.style.background = '#10b981';
                 
                 setTimeout(() => {
-                    btn.className = 'btn-copy';
-                    btn.innerHTML = '<span class="icon">📋</span> 복사하기';
-                }, 2000);
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 1000);
                 
-                await fetchData();
-            } catch (error) {
-                console.error('처리 실패:', error);
-                alert('처리 중 오류가 발생했습니다.');
-            }
-        }
-        
-        // 기 발송건 복사
-        async function copyCompleted() {
-            if (!isAuthorized) {
-                login();
-                return;
-            }
-            
-            const text = completedReports.map(c => 
-                `${c.phone_number} / ${c.type} / ${c.recruiter} / ${c.consultant_name} 건`
-            ).join('\n');
-            
-            if (!text) {
-                alert('복사할 기 발송건이 없습니다');
-                return;
-            }
-            
-            try {
-                await navigator.clipboard.writeText(text);
-                
-                const btn = document.getElementById('copyCompletedBtn');
-                btn.className = 'btn-secondary btn-success';
-                btn.innerHTML = '<span class="icon">✔️</span> 복사완료!';
-                
-                setTimeout(() => {
-                    btn.className = 'btn-secondary';
-                    btn.innerHTML = '<span class="icon">📋</span> 복사';
-                }, 2000);
+                updateHistoryUI();
                 
             } catch (error) {
                 console.error('복사 실패:', error);
@@ -1061,43 +1381,25 @@
             }
         }
         
-        // 기 발송건 정리 (삭제)
-        async function clearCompleted() {
-            if (!isAuthorized) {
-                login();
-                return;
-            }
-            
-            if (!confirm(`정말로 ${currentTeam}의 모든 기 발송건을 정리하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
-                return;
-            }
-            
-            try {
-                const deletePromises = completedReports.map(item =>
-                    fetch(
-                        `${SUPABASE_URL}/rest/v1/consultations?id=eq.${item.id}`,
-                        {
-                            method: 'DELETE',
-                            headers: {
-                                'apikey': SUPABASE_ANON_KEY,
-                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                                'Content-Type': 'application/json'
-                            }
-                        }
-                    )
-                );
-                
-                await Promise.all(deletePromises);
-                alert(`${currentTeam}의 기 발송건이 정리되었습니다.`);
-                await fetchData();
-                
-            } catch (error) {
-                console.error('정리 실패:', error);
-                alert('정리 중 오류가 발생했습니다.');
+        // 이력 삭제
+        function deleteHistoryItem(index) {
+            if (confirm('이 이력을 삭제하시겠습니까?')) {
+                copyHistory.splice(index, 1);
+                localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
+                updateHistoryUI();
             }
         }
         
-        // UI 업데이트
+        // 전체 이력 삭제
+        function clearAllHistory() {
+            if (confirm('모든 복사 이력을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+                copyHistory = [];
+                localStorage.removeItem('adminCopyHistory');
+                updateHistoryUI();
+            }
+        }
+        
+        // 일반 팀 UI 업데이트
         function updateUI() {
             // 미보고 건
             if (pendingReports.length > 0) {
@@ -1108,14 +1410,6 @@
                     `${c.phone_number} / ${c.type} / ${c.recruiter} / ${c.consultant_name} 건`
                 ).join('\n');
                 
-                const buttonHTML = isAuthorized ? 
-                    `<button class="btn-copy" id="copyBtn" onclick="copyAndReport()">
-                        <span class="icon">📋</span> 복사하기
-                    </button>` :
-                    `<button class="btn-secondary" onclick="login()">
-                        🔒 복사 권한 획득
-                    </button>`;
-                
                 document.getElementById('pendingSection').innerHTML = `
                     <div class="report-box">
                         <div class="report-header">
@@ -1125,7 +1419,6 @@
                                     ${pendingReports.length}건의 미보고 상담
                                 </p>
                             </div>
-                            ${buttonHTML}
                         </div>
                         <div class="report-content">
                             <pre>${reportText}</pre>
@@ -1142,20 +1435,6 @@
                 document.getElementById('completedSection').style.display = 'block';
                 document.getElementById('completedCount').textContent = completedReports.length;
                 
-                // 버튼 HTML
-                const buttonsHTML = isAuthorized ? 
-                    `<button class="btn-secondary" id="copyCompletedBtn" onclick="copyCompleted()">
-                        <span class="icon">📋</span> 복사
-                    </button>
-                    <button class="btn-secondary btn-danger" onclick="clearCompleted()">
-                        <span class="icon">🗑️</span> 정리
-                    </button>` :
-                    `<button class="btn-secondary" onclick="login()">
-                        🔒 권한 획득
-                    </button>`;
-                
-                document.getElementById('completedButtons').innerHTML = buttonsHTML;
-                
                 const listHTML = completedReports.map(item => `
                     <div class="completed-item">
                         ${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건
@@ -1166,6 +1445,153 @@
                 document.getElementById('completedList').innerHTML = listHTML;
             } else {
                 document.getElementById('completedSection').style.display = 'none';
+            }
+        }
+        
+        // 관리자 UI 업데이트
+        function updateAdminUI() {
+            // 전체 통계
+            let totalPending = 0;
+            let totalCompleted = 0;
+            
+            Object.values(adminData).forEach(teamData => {
+                totalPending += teamData.pending.length;
+                totalCompleted += teamData.completed.length;
+            });
+            
+            document.getElementById('adminStatsSummary').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalPending}</div>
+                    <div class="stat-label">미보고 건</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalCompleted}</div>
+                    <div class="stat-label">기 발송건</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalPending + totalCompleted}</div>
+                    <div class="stat-label">전체 상담</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${copyHistory.length}</div>
+                    <div class="stat-label">복사 이력</div>
+                </div>
+            `;
+            
+            // 팀별 상담 목록
+            let adminViewHTML = '';
+            
+            Object.entries(adminData).forEach(([team, teamData]) => {
+                const teamIcon = teamIcons[team] || '📁';
+                
+                adminViewHTML += `
+                    <div class="team-section">
+                        <div class="team-section-header">
+                            <div class="team-section-title">
+                                <span>${teamIcon}</span>
+                                <span>${team}</span>
+                            </div>
+                            <div class="team-stats">
+                                <span class="stat-badge pending">미보고: ${teamData.pending.length}</span>
+                                <span class="stat-badge completed">완료: ${teamData.completed.length}</span>
+                            </div>
+                        </div>
+                        <div class="consultation-list">
+                `;
+                
+                // 미보고 건 표시
+                teamData.pending.forEach(item => {
+                    adminViewHTML += `
+                        <div class="consultation-item">
+                            <div class="consultation-text">
+                                ${item.phone_number} / ${item.consultant_name}
+                                <span class="status-label pending">미보고</span>
+                            </div>
+                            <div class="consultation-actions">
+                                <div class="consultation-time">
+                                    ${new Date(item.created_at).toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'})}
+                                </div>
+                                <button class="btn-copy-small" onclick="copyAdminItem(${JSON.stringify(item).replace(/"/g, '&quot;')}, '${team}')">
+                                    📋 복사
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // 기 발송건 표시
+                teamData.completed.forEach(item => {
+                    adminViewHTML += `
+                        <div class="consultation-item">
+                            <div class="consultation-text">
+                                ${item.phone_number} / ${item.consultant_name}
+                                <span class="status-label reported">보고완료</span>
+                            </div>
+                            <div class="consultation-actions">
+                                <div class="consultation-time">
+                                    ${new Date(item.reported_at || item.created_at).toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'})}
+                                </div>
+                                <button class="btn-copy-small" onclick="copyAdminItem(${JSON.stringify(item).replace(/"/g, '&quot;')}, '${team}')">
+                                    📋 복사
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                if (teamData.all.length === 0) {
+                    adminViewHTML += `
+                        <div style="text-align: center; padding: 1rem; color: #666666; font-size: 0.875rem;">
+                            등록된 상담이 없습니다
+                        </div>
+                    `;
+                }
+                
+                adminViewHTML += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('adminView').innerHTML = adminViewHTML;
+            
+            // 이력 UI 업데이트
+            updateHistoryUI();
+        }
+        
+        // 이력 UI 업데이트
+        function updateHistoryUI() {
+            if (copyHistory.length === 0) {
+                document.getElementById('historyList').style.display = 'none';
+                document.getElementById('emptyHistory').style.display = 'block';
+            } else {
+                document.getElementById('historyList').style.display = 'block';
+                document.getElementById('emptyHistory').style.display = 'none';
+                
+                let historyHTML = '';
+                copyHistory.forEach((item, index) => {
+                    const statusClass = item.status === 'reported' ? 'reported' : 'pending';
+                    const statusText = item.status === 'reported' ? '보고완료' : '미보고';
+                    
+                    historyHTML += `
+                        <div class="history-item">
+                            <div class="history-text">
+                                [${item.team}] ${item.text}
+                                <span class="status-label ${statusClass}">${statusText}</span>
+                            </div>
+                            <div class="history-meta">
+                                <div class="history-time">
+                                    ${new Date(item.copiedAt).toLocaleString('ko-KR')}
+                                </div>
+                                <button class="btn-danger-small" onclick="deleteHistoryItem(${index})">
+                                    🗑️ 삭제
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('historyList').innerHTML = historyHTML;
             }
         }
     </script>
