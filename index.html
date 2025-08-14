@@ -1078,19 +1078,17 @@
             if (teamName === '관리자') {
                 // 저장된 관리자 인증 확인
                 const savedAuth = localStorage.getItem('adminAuthorized');
-                if (savedAuth === 'true') {
-                    isAdminAuthorized = true;
-                } else {
+                if (savedAuth !== 'true') {
                     // 비밀번호 확인
                     const password = prompt('관리자 비밀번호를 입력하세요:');
                     if (password !== '1250') {
                         alert('비밀번호가 올바르지 않습니다.');
                         return;
                     }
-                    isAdminAuthorized = true;
                     localStorage.setItem('adminAuthorized', 'true');
                 }
                 
+                isAdminAuthorized = true;
                 currentTeam = teamName;
                 consultantName = nameInput;
                 
