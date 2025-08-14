@@ -1419,22 +1419,26 @@
                 
                 localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
                 
-                // 버튼 피드백
-                const btn = event.target;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = `✔️ ${allPending.length}건 복사완료!`;
-                btn.style.background = '#10b981';
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.background = '';
-                }, 1500);
+                // 버튼 피드백 - ID로 버튼 찾기
+                const btn = document.getElementById('copyAllBtn');
+                if (btn) {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = `✔️ ${allPending.length}건 복사완료!`;
+                    btn.style.background = '#10b981';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                    }, 1500);
+                }
                 
                 updateHistoryUI();
                 
+                alert(`전체 ${allPending.length}건이 복사되었습니다.`);
+                
             } catch (error) {
                 console.error('복사 실패:', error);
-                alert('복사 중 오류가 발생했습니다.');
+                alert('복사 중 오류가 발생했습니다. 클립보드 접근 권한을 확인해주세요.');
             }
         }
         
@@ -1470,22 +1474,26 @@
                 
                 localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
                 
-                // 버튼 피드백
-                const btn = event.target;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = `✔️ ${teamData.pending.length}건 복사완료!`;
-                btn.style.background = '#10b981';
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.background = '';
-                }, 1500);
+                // 버튼 피드백 - 팀명으로 버튼 찾기
+                const btn = document.querySelector(`.btn-copy-small[onclick*="copyTeamPending('${team}')"]`);
+                if (btn) {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = `✔️ ${teamData.pending.length}건 복사완료!`;
+                    btn.style.background = '#10b981';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                    }, 1500);
+                }
                 
                 updateHistoryUI();
                 
+                alert(`${team}의 미보고 ${teamData.pending.length}건이 복사되었습니다.`);
+                
             } catch (error) {
                 console.error('복사 실패:', error);
-                alert('복사 중 오류가 발생했습니다.');
+                alert('복사 중 오류가 발생했습니다. 클립보드 접근 권한을 확인해주세요.');
             }
         }
         
@@ -1610,7 +1618,7 @@
                             <p style="font-size: 0.875rem; color: #808080;">모든 팀의 미보고 건 (${allPending.length}건)</p>
                         </div>
                         ${allPending.length > 0 ? `
-                            <button class="btn-copy-small" style="padding: 0.75rem 1.5rem; font-size: 0.875rem;" onclick="copyAllPending()">
+                            <button id="copyAllBtn" class="btn-copy-small" style="padding: 0.75rem 1.5rem; font-size: 0.875rem;" onclick="copyAllPending()">
                                 📋 전체 미보고 복사 (${allPending.length}건)
                             </button>
                         ` : ''}
