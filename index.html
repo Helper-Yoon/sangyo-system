@@ -72,7 +72,6 @@
             display: inline-block;
         }
         
-        /* 팀 선택 화면 스타일 */
         @keyframes fadeIn {
             from { 
                 opacity: 0;
@@ -99,7 +98,6 @@
             padding: 2rem;
         }
         
-        /* 이름 입력 섹션 */
         .name-input-section {
             background: linear-gradient(135deg, #0a0a0a 0%, #0d0d0d 100%);
             border: 2px solid #1a1a1a;
@@ -238,7 +236,6 @@
             color: #666666;
         }
         
-        /* 팀 배지 스타일 */
         .team-badge {
             display: inline-flex;
             align-items: center;
@@ -395,21 +392,6 @@
             box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
         }
         
-        .btn-danger-small {
-            padding: 0.375rem 0.75rem;
-            background: #dc2626;
-            font-size: 0.75rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            border-radius: 0.375rem;
-        }
-        
-        .btn-danger-small:hover {
-            background: #ef4444;
-            transform: translateY(-1px);
-        }
-        
         .btn-refresh {
             padding: 0.5rem;
             background: #1a1a1a;
@@ -546,66 +528,35 @@
             margin-left: 0.5rem;
         }
         
-        /* 관리자 뷰 스타일 */
         .admin-view {
             margin-top: 1rem;
         }
         
-        .team-section {
-            background-color: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
-        
-        .team-section:hover {
-            border-color: #004EA2;
-            box-shadow: 0 0 20px rgba(0, 78, 162, 0.1);
-        }
-        
-        .team-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid #333333;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-        
-        .team-section-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .team-stats {
-            display: flex;
+        .admin-stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
-            font-size: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #0a0a0a 0%, #0d0d0d 100%);
+            border: 1px solid #1a1a1a;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
             color: #808080;
-        }
-        
-        .stat-badge {
-            padding: 0.25rem 0.5rem;
-            background: #1a1a1a;
-            border-radius: 0.25rem;
-            border: 1px solid #333333;
-        }
-        
-        .stat-badge.pending {
-            border-color: #dc2626;
-            color: #ef4444;
-        }
-        
-        .stat-badge.completed {
-            border-color: #10b981;
-            color: #34d399;
         }
         
         .consultation-item {
@@ -658,93 +609,6 @@
             background: rgba(52, 211, 153, 0.2);
             color: #34d399;
             border: 1px solid rgba(52, 211, 153, 0.3);
-        }
-        
-        .admin-stats-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .stat-card {
-            background: linear-gradient(135deg, #0a0a0a 0%, #0d0d0d 100%);
-            border: 1px solid #1a1a1a;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 0.25rem;
-        }
-        
-        .stat-label {
-            font-size: 0.875rem;
-            color: #808080;
-        }
-        
-        /* 이력 섹션 */
-        .history-section {
-            margin-top: 2rem;
-        }
-        
-        .history-list {
-            max-height: 30rem;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #8B0000 #0a0a0a;
-        }
-        
-        .history-list::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .history-list::-webkit-scrollbar-track {
-            background: #0a0a0a;
-        }
-        
-        .history-list::-webkit-scrollbar-thumb {
-            background: #8B0000;
-            border-radius: 4px;
-        }
-        
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            background: #050505;
-            border: 1px solid #2a1a1a;
-            border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
-            transition: all 0.2s;
-        }
-        
-        .history-item:hover {
-            background: #0a0505;
-            border-color: #8B0000;
-        }
-        
-        .history-text {
-            flex: 1;
-            color: #b0b0b0;
-            font-size: 0.875rem;
-            line-height: 1.4;
-        }
-        
-        .history-meta {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .history-time {
-            font-size: 0.75rem;
-            color: #666666;
         }
         
         .icon {
@@ -920,22 +784,6 @@
         <div class="admin-view" id="adminView">
             <!-- 동적으로 생성됨 -->
         </div>
-        
-        <!-- 이력 섹션 -->
-        <div class="card history-section">
-            <div class="header">
-                <h2>📜 복사 이력</h2>
-                <button class="btn-secondary" style="background: #dc2626; border-color: #991b1b;" onmouseover="this.style.background='#ef4444'" onmouseout="this.style.background='#dc2626'" onclick="clearAllHistory()">
-                    <span class="icon">🗑️</span> 전체 삭제
-                </button>
-            </div>
-            <div class="history-list" id="historyList">
-                <!-- 동적으로 생성됨 -->
-            </div>
-            <div id="emptyHistory" class="empty-state" style="display: none;">
-                <p>복사 이력이 없습니다</p>
-            </div>
-        </div>
     </div>
     
     <script>
@@ -1018,11 +866,10 @@
                     
                     fetchAdminData();
                     
-                    // 자동 새로고침 설정
+                    // 자동 새로고침 해제
                     if (autoRefreshInterval) {
                         clearInterval(autoRefreshInterval);
                     }
-                    autoRefreshInterval = setInterval(fetchAdminData, 10000);
                 } else if (savedTeam === '관리자' && !isAdminAuthorized) {
                     // 관리자지만 인증 안된 경우 팀 선택 화면으로
                     showTeamSelection();
@@ -1118,11 +965,10 @@
                 
                 fetchAdminData();
                 
-                // 자동 새로고침 설정
+                // 자동 새로고침 해제
                 if (autoRefreshInterval) {
                     clearInterval(autoRefreshInterval);
                 }
-                autoRefreshInterval = setInterval(fetchAdminData, 10000);
             } else {
                 currentTeam = teamName;
                 consultantName = nameInput;
@@ -1145,11 +991,10 @@
                 showNameDisplay();
                 fetchData();
                 
-                // 자동 새로고침 설정
+                // 자동 새로고침 해제
                 if (autoRefreshInterval) {
                     clearInterval(autoRefreshInterval);
                 }
-                autoRefreshInterval = setInterval(fetchData, 10000);
                 
                 // 이벤트 리스너 설정
                 const phoneInput = document.getElementById('phoneInput');
@@ -1397,7 +1242,7 @@
             try {
                 await navigator.clipboard.writeText(fullText);
                 
-                // 모든 항목을 기발송으로 업데이트
+                // 모든 항목을 기발송으로 업데이트 (각 팀에서도 자동 반영됨)
                 const updatePromises = allPending.map(item =>
                     fetch(
                         `${SUPABASE_URL}/rest/v1/consultations?id=eq.${item.id}`,
@@ -1435,7 +1280,7 @@
                 // 데이터 새로고침
                 await fetchAdminData();
                 
-                alert(`전체 ${allPending.length}건이 복사되고 기발송으로 이동했습니다.`);
+                alert(`전체 ${allPending.length}건이 복사되고 기발송으로 이동했습니다.\n각 팀에서도 자동으로 기발송 처리됩니다.`);
                 
             } catch (error) {
                 console.error('처리 실패:', error);
@@ -1487,81 +1332,6 @@
             } catch (error) {
                 console.error('삭제 실패:', error);
                 alert('삭제 중 오류가 발생했습니다.');
-            }
-        }
-        
-        // 팀의 미보고건 복사
-        async function copyTeamPending(team) {
-            const teamData = adminData[team];
-            if (!teamData || teamData.pending.length === 0) {
-                alert('복사할 미보고건이 없습니다.');
-                return;
-            }
-            
-            // 복사할 텍스트 생성
-            const textLines = teamData.pending.map(item => 
-                `${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건`
-            );
-            const fullText = textLines.join('\n');
-            
-            try {
-                await navigator.clipboard.writeText(fullText);
-                
-                // 모든 항목을 이력에 추가
-                const timestamp = new Date().toISOString();
-                teamData.pending.forEach(item => {
-                    const historyItem = {
-                        id: item.id,
-                        text: `${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건`,
-                        team: team,
-                        copiedAt: timestamp,
-                        status: 'pending'
-                    };
-                    copyHistory.unshift(historyItem);
-                });
-                
-                localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
-                
-                // 버튼 피드백 - 팀명으로 버튼 찾기
-                const btn = document.querySelector(`.btn-copy-small[onclick*="copyTeamPending('${team}')"]`);
-                if (btn) {
-                    const originalText = btn.innerHTML;
-                    btn.innerHTML = `✔️ ${teamData.pending.length}건 복사완료!`;
-                    btn.style.background = '#10b981';
-                    
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.style.background = '';
-                    }, 1500);
-                }
-                
-                updateHistoryUI();
-                
-                alert(`${team}의 미보고 ${teamData.pending.length}건이 복사되었습니다.`);
-                
-            } catch (error) {
-                console.error('복사 실패:', error);
-                alert('복사 중 오류가 발생했습니다. 클립보드 접근 권한을 확인해주세요.');
-            }
-        }
-        
-        // 그룹 삭제 함수
-        function deleteHistoryGroup(copiedAt, team) {
-            if (confirm('이 그룹의 모든 이력을 삭제하시겠습니까?')) {
-                copyHistory = copyHistory.filter(item => 
-                    !(item.copiedAt === copiedAt && item.team === team)
-                );
-                localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
-                updateHistoryUI();
-            }
-        }
-        
-        // 전체 이력 삭제
-        function clearAllHistory() {
-            if (confirm('모든 복사 이력을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
-                copyHistory = [];
-                localStorage.removeItem('adminCopyHistory');
-                updateHistoryUI();
             }
         }
         
@@ -1621,7 +1391,7 @@
             let allCompleted = [];
             
             Object.entries(adminData).forEach(([team, teamData]) => {
-                // 각 항목에 팀 정보 추가 (이력용)
+                // 각 항목에 팀 정보 추가
                 teamData.pending.forEach(item => {
                     allPending.push({...item, teamName: team});
                 });
@@ -1633,9 +1403,6 @@
             // 시간 순 정렬 (최신 순)
             allPending.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             allCompleted.sort((a, b) => new Date(b.reported_at || b.created_at) - new Date(a.reported_at || a.created_at));
-            
-            // 이력 그룹 수 계산
-            const historyGroups = new Set(copyHistory.map(item => `${item.copiedAt}_${item.team || 'all'}`)).size;
             
             // 전체 통계
             document.getElementById('adminStatsSummary').innerHTML = `
@@ -1652,8 +1419,8 @@
                     <div class="stat-label">전체 상담</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">${historyGroups}</div>
-                    <div class="stat-label">복사 이력</div>
+                    <div class="stat-number">${new Date().toLocaleTimeString('ko-KR')}</div>
+                    <div class="stat-label">마지막 업데이트</div>
                 </div>
             `;
             
@@ -1667,11 +1434,11 @@
                         </div>
                         ${allPending.length > 0 ? `
                             <button id="copyAllBtn" class="btn-copy-small" style="padding: 0.75rem 1.5rem; font-size: 0.875rem;" onclick="copyAllPending()">
-                                📋 전체 미보고 복사 (${allPending.length}건)
+                                📋 전체 미보고 복사 후 발송처리 (${allPending.length}건)
                             </button>
                         ` : ''}
                     </div>
-                    <div style="max-height: 400px; overflow-y: auto;">
+                    <div style="max-height: 500px; overflow-y: auto;">
             `;
             
             if (allPending.length > 0) {
@@ -1690,8 +1457,10 @@
                 });
             } else {
                 adminViewHTML += `
-                    <div style="text-align: center; padding: 2rem; color: #666666;">
-                        미보고 건이 없습니다
+                    <div style="text-align: center; padding: 3rem; color: #666666;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+                        <div>현재 미보고 건이 없습니다</div>
+                        <div style="font-size: 0.875rem; margin-top: 0.5rem;">각 팀에서 등록하면 표시됩니다</div>
                     </div>
                 `;
             }
@@ -1706,6 +1475,14 @@
                             <h2 style="margin-bottom: 0.5rem;">✅ 전체 기 발송건</h2>
                             <p style="font-size: 0.875rem; color: #808080;">모든 팀의 기 발송건 (${allCompleted.length}건)</p>
                         </div>
+                        ${allCompleted.length > 0 ? `
+                            <button class="btn-secondary" style="background: #dc2626; border-color: #991b1b;" 
+                                    onmouseover="this.style.background='#ef4444'" 
+                                    onmouseout="this.style.background='#dc2626'" 
+                                    onclick="deleteAllCompleted()">
+                                <span class="icon">🗑️</span> 전체 삭제
+                            </button>
+                        ` : ''}
                     </div>
                     <div style="max-height: 400px; overflow-y: auto;">
             `;
@@ -1738,75 +1515,6 @@
             `;
             
             document.getElementById('adminView').innerHTML = adminViewHTML;
-            
-            // 이력 UI 업데이트
-            updateHistoryUI();
-        }
-        
-        // 이력 UI 업데이트
-        function updateHistoryUI() {
-            if (copyHistory.length === 0) {
-                document.getElementById('historyList').style.display = 'none';
-                document.getElementById('emptyHistory').style.display = 'block';
-            } else {
-                document.getElementById('historyList').style.display = 'block';
-                document.getElementById('emptyHistory').style.display = 'none';
-                
-                // 시간별로 그룹화
-                const groupedHistory = {};
-                copyHistory.forEach((item, index) => {
-                    const key = `${item.copiedAt}_${item.team}`;
-                    if (!groupedHistory[key]) {
-                        groupedHistory[key] = {
-                            team: item.team,
-                            copiedAt: item.copiedAt,
-                            items: [],
-                            indices: []
-                        };
-                    }
-                    groupedHistory[key].items.push(item);
-                    groupedHistory[key].indices.push(index);
-                });
-                
-                let historyHTML = '';
-                Object.values(groupedHistory).forEach(group => {
-                    const teamIcon = group.team === '전체' ? '🌍' : (teamIcons[group.team] || '📁');
-                    const teamLabel = group.team === '전체' ? '전체 통합' : group.team;
-                    
-                    historyHTML += `
-                        <div class="history-item" style="padding: 1rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
-                                <div>
-                                    <strong style="color: #ffffff; font-size: 1rem;">
-                                        ${teamIcon} ${teamLabel}
-                                    </strong>
-                                    <span style="margin-left: 0.5rem; font-size: 0.875rem; color: #808080;">
-                                        (미보고 ${group.items.length}건)
-                                    </span>
-                                    <span class="status-label pending">복사완료</span>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <div class="history-time">
-                                        ${new Date(group.copiedAt).toLocaleString('ko-KR')}
-                                    </div>
-                                    <button class="btn-danger-small" onclick="deleteHistoryGroup('${group.copiedAt}', '${group.team}')">
-                                        🗑️ 삭제
-                                    </button>
-                                </div>
-                            </div>
-                            <div style="background: #000000; padding: 0.5rem; border-radius: 0.25rem; border: 1px solid #1a1a1a;">
-                                ${group.items.map(item => `
-                                    <div style="font-size: 0.75rem; color: #b0b0b0; line-height: 1.5;">
-                                        ${item.text}
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                document.getElementById('historyList').innerHTML = historyHTML;
-            }
         }
     </script>
 </body>
