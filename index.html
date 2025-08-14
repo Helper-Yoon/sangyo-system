@@ -88,13 +88,64 @@
             animation: fadeIn 0.5s ease;
         }
         
+        .team-selection-container {
+            max-width: 900px;
+            width: 100%;
+            padding: 2rem;
+        }
+        
+        /* 이름 입력 섹션 */
+        .name-input-section {
+            background: linear-gradient(135deg, #0a0a0a 0%, #0d0d0d 100%);
+            border: 2px solid #1a1a1a;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .name-input-label {
+            font-size: 1.125rem;
+            color: #e0e0e0;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .name-input-field {
+            width: 100%;
+            max-width: 300px;
+            padding: 0.75rem 1rem;
+            background-color: #0d0d0d;
+            border: 1px solid #333333;
+            border-radius: 0.5rem;
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .name-input-field:focus {
+            outline: none;
+            border-color: #004EA2;
+            box-shadow: 0 0 0 3px rgba(0, 78, 162, 0.2), 0 0 20px rgba(0, 78, 162, 0.1);
+            background-color: #0f0f0f;
+        }
+        
+        .name-input-field::placeholder {
+            color: #666666;
+        }
+        
+        .saved-name-display {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #0066CC;
+        }
+        
         .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
-            max-width: 900px;
-            width: 100%;
-            padding: 2rem;
         }
         
         .team-card {
@@ -107,6 +158,11 @@
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+        }
+        
+        .team-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         
         .team-card::before {
@@ -123,18 +179,18 @@
             z-index: -1;
         }
         
-        .team-card:hover {
+        .team-card:not(.disabled):hover {
             transform: translateY(-8px) scale(1.05);
             border-color: #004EA2;
             box-shadow: 0 15px 40px rgba(0, 78, 162, 0.4);
         }
         
-        .team-card:hover .team-icon {
+        .team-card:not(.disabled):hover .team-icon {
             transform: scale(1.1);
             filter: drop-shadow(0 0 20px rgba(0, 78, 162, 0.5));
         }
         
-        .team-card:hover::before {
+        .team-card:not(.disabled):hover::before {
             opacity: 1;
         }
         
@@ -150,6 +206,13 @@
             font-weight: bold;
             color: #ffffff;
             text-shadow: 0 0 10px rgba(0, 78, 162, 0.2);
+        }
+        
+        .team-hint {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #666666;
         }
         
         /* 팀 배지 스타일 */
@@ -471,29 +534,48 @@
 <body>
     <!-- 팀 선택 화면 -->
     <div id="teamSelection" class="team-selection" style="display: none;">
-        <div>
-            <h1 style="text-align: center; margin-bottom: 3rem; font-size: 2rem; background: linear-gradient(135deg, #ffffff 0%, #004EA2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none;">✨ 소속 팀을 선택하세요 ✨</h1>
+        <div class="team-selection-container">
+            <h1 style="text-align: center; margin-bottom: 2rem; font-size: 2rem; background: linear-gradient(135deg, #ffffff 0%, #004EA2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none;">✨ 가망상담건 유치자변경 보고시스템 ✨</h1>
+            
+            <!-- 이름 입력 섹션 -->
+            <div class="name-input-section">
+                <label class="name-input-label">👤 상담사 이름을 입력해주세요</label>
+                <input type="text" 
+                       id="globalNameInput" 
+                       class="name-input-field" 
+                       placeholder="홍길동"
+                       maxlength="20">
+                <div id="savedNameDisplay" class="saved-name-display" style="display: none;">
+                    저장된 이름: <span id="savedNameText"></span>
+                </div>
+            </div>
+            
+            <!-- 팀 선택 그리드 -->
             <div class="team-grid">
-                <div class="team-card" onclick="selectTeam('SNS 1팀')" style="animation: fadeIn 0.5s ease 0.1s both;">
+                <div class="team-card disabled" id="team1" onclick="selectTeam('SNS 1팀')" style="animation: fadeIn 0.5s ease 0.1s both;">
                     <div class="team-icon">🚀</div>
                     <div class="team-name">SNS 1팀</div>
                 </div>
-                <div class="team-card" onclick="selectTeam('SNS 2팀')" style="animation: fadeIn 0.5s ease 0.2s both;">
+                <div class="team-card disabled" id="team2" onclick="selectTeam('SNS 2팀')" style="animation: fadeIn 0.5s ease 0.2s both;">
                     <div class="team-icon">⭐</div>
                     <div class="team-name">SNS 2팀</div>
                 </div>
-                <div class="team-card" onclick="selectTeam('SNS 3팀')" style="animation: fadeIn 0.5s ease 0.3s both;">
+                <div class="team-card disabled" id="team3" onclick="selectTeam('SNS 3팀')" style="animation: fadeIn 0.5s ease 0.3s both;">
                     <div class="team-icon">💎</div>
                     <div class="team-name">SNS 3팀</div>
                 </div>
-                <div class="team-card" onclick="selectTeam('SNS 4팀')" style="animation: fadeIn 0.5s ease 0.4s both;">
+                <div class="team-card disabled" id="team4" onclick="selectTeam('SNS 4팀')" style="animation: fadeIn 0.5s ease 0.4s both;">
                     <div class="team-icon">🔥</div>
                     <div class="team-name">SNS 4팀</div>
                 </div>
-                <div class="team-card" onclick="selectTeam('의정부 SNS팀')" style="animation: fadeIn 0.5s ease 0.5s both;">
+                <div class="team-card disabled" id="team5" onclick="selectTeam('의정부 SNS팀')" style="animation: fadeIn 0.5s ease 0.5s both;">
                     <div class="team-icon">🏆</div>
                     <div class="team-name">의정부 SNS팀</div>
                 </div>
+            </div>
+            
+            <div class="team-hint">
+                💡 먼저 이름을 입력한 후 소속 팀을 선택해주세요
             </div>
         </div>
     </div>
@@ -582,18 +664,77 @@
         
         // 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            // 저장된 이름 확인
+            const savedGlobalName = localStorage.getItem('globalConsultantName');
+            if (savedGlobalName) {
+                document.getElementById('globalNameInput').value = savedGlobalName;
+                document.getElementById('savedNameDisplay').style.display = 'block';
+                document.getElementById('savedNameText').textContent = savedGlobalName;
+                enableTeamCards();
+            }
+            
+            // 이름 입력 이벤트 리스너
+            document.getElementById('globalNameInput').addEventListener('input', function(e) {
+                const name = e.target.value.trim();
+                if (name) {
+                    enableTeamCards();
+                    // 즉시 localStorage에 저장
+                    localStorage.setItem('globalConsultantName', name);
+                    document.getElementById('savedNameDisplay').style.display = 'block';
+                    document.getElementById('savedNameText').textContent = name;
+                } else {
+                    disableTeamCards();
+                    document.getElementById('savedNameDisplay').style.display = 'none';
+                }
+            });
+            
+            // Enter 키 처리
+            document.getElementById('globalNameInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && e.target.value.trim()) {
+                    // 첫 번째 팀 자동 선택
+                    selectTeam('SNS 1팀');
+                }
+            });
+            
+            // 저장된 팀 확인
             const savedTeam = localStorage.getItem('selectedTeam');
-            if (savedTeam) {
+            if (savedTeam && savedGlobalName) {
                 selectTeam(savedTeam);
             } else {
                 showTeamSelection();
             }
         });
         
+        // 팀 카드 활성화
+        function enableTeamCards() {
+            const cards = document.querySelectorAll('.team-card');
+            cards.forEach(card => {
+                card.classList.remove('disabled');
+            });
+        }
+        
+        // 팀 카드 비활성화
+        function disableTeamCards() {
+            const cards = document.querySelectorAll('.team-card');
+            cards.forEach(card => {
+                card.classList.add('disabled');
+            });
+        }
+        
         // 팀 선택 화면 표시
         function showTeamSelection() {
             document.getElementById('teamSelection').style.display = 'flex';
             document.getElementById('mainContainer').style.display = 'none';
+            
+            // 저장된 이름 다시 로드
+            const savedGlobalName = localStorage.getItem('globalConsultantName');
+            if (savedGlobalName) {
+                document.getElementById('globalNameInput').value = savedGlobalName;
+                document.getElementById('savedNameDisplay').style.display = 'block';
+                document.getElementById('savedNameText').textContent = savedGlobalName;
+                enableTeamCards();
+            }
+            
             if (autoRefreshInterval) {
                 clearInterval(autoRefreshInterval);
             }
@@ -601,11 +742,21 @@
         
         // 팀 선택
         function selectTeam(teamName) {
-            currentTeam = teamName;
-            localStorage.setItem('selectedTeam', teamName);
+            const nameInput = document.getElementById('globalNameInput').value.trim();
             
-            // 팀별로 다른 상담사 이름 로드
-            consultantName = localStorage.getItem(`consultantName_${teamName}`) || '';
+            if (!nameInput) {
+                alert('먼저 상담사 이름을 입력해주세요');
+                document.getElementById('globalNameInput').focus();
+                return;
+            }
+            
+            currentTeam = teamName;
+            consultantName = nameInput;
+            
+            // localStorage에 저장
+            localStorage.setItem('selectedTeam', teamName);
+            localStorage.setItem('globalConsultantName', consultantName);
+            localStorage.setItem(`consultantName_${teamName}`, consultantName);
             
             // UI 업데이트
             document.getElementById('currentTeam').textContent = teamName;
@@ -617,7 +768,7 @@
             
             // 초기화
             checkAuthorization();
-            loadConsultantName();
+            showNameDisplay();
             fetchData();
             
             // 자동 새로고침 설정
@@ -665,22 +816,11 @@
             }
         }
         
-        // 상담사 이름 로드
-        function loadConsultantName() {
-            const saved = localStorage.getItem(`consultantName_${currentTeam}`);
-            if (saved) {
-                consultantName = saved;
-                showNameDisplay();
-            } else {
-                showNameInput();
-            }
-        }
-        
         // 이름 입력 표시
         function showNameInput() {
             document.getElementById('nameSection').innerHTML = `
                 <div class="input-group">
-                    <input type="text" id="nameInput" placeholder="상담사 이름을 입력하세요">
+                    <input type="text" id="nameInput" placeholder="상담사 이름을 입력하세요" value="${consultantName}">
                     <button onclick="saveConsultantName()">💾 저장</button>
                 </div>
             `;
@@ -708,7 +848,11 @@
                 return;
             }
             consultantName = input.value.trim();
+            
+            // 전역 이름과 팀별 이름 모두 저장
+            localStorage.setItem('globalConsultantName', consultantName);
             localStorage.setItem(`consultantName_${currentTeam}`, consultantName);
+            
             showNameDisplay();
             alert(`${currentTeam} 상담사 이름이 "${consultantName}"(으)로 설정되었습니다`);
         }
