@@ -1389,10 +1389,15 @@
                 alert('복사 중 오류가 발생했습니다.');
             }
         }
-                
-            } catch (error) {
-                console.error('복사 실패:', error);
-                alert('복사 중 오류가 발생했습니다.');
+        
+        // 그룹 삭제 함수
+        function deleteHistoryGroup(copiedAt, team) {
+            if (confirm('이 그룹의 모든 이력을 삭제하시겠습니까?')) {
+                copyHistory = copyHistory.filter(item => 
+                    !(item.copiedAt === copiedAt && item.team === team)
+                );
+                localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
+                updateHistoryUI();
             }
         }
         
@@ -1645,17 +1650,6 @@
                 });
                 
                 document.getElementById('historyList').innerHTML = historyHTML;
-            }
-        }
-        
-        // 그룹 삭제 함수
-        function deleteHistoryGroup(copiedAt, team) {
-            if (confirm('이 그룹의 모든 이력을 삭제하시겠습니까?')) {
-                copyHistory = copyHistory.filter(item => 
-                    !(item.copiedAt === copiedAt && item.team === team)
-                );
-                localStorage.setItem('adminCopyHistory', JSON.stringify(copyHistory));
-                updateHistoryUI();
             }
         }
     </script>
