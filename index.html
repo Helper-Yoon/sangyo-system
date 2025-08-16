@@ -392,6 +392,20 @@
             box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
         }
         
+        .btn-delete-item {
+            padding: 0.25rem 0.5rem;
+            background: #dc2626;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            box-shadow: none;
+        }
+        
+        .btn-delete-item:hover {
+            background: #ef4444;
+            transform: none;
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+        }
+        
         .btn-refresh {
             padding: 0.5rem;
             background: #1a1a1a;
@@ -515,6 +529,9 @@
             margin-bottom: 0.5rem;
             line-height: 1.5;
             transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .completed-item:hover {
@@ -522,10 +539,20 @@
             box-shadow: 0 0 10px rgba(0, 78, 162, 0.1);
         }
         
+        .completed-item-text {
+            flex: 1;
+        }
+        
         .completed-item .time {
             font-size: 0.75rem;
             color: #666666;
             margin-left: 0.5rem;
+        }
+        
+        .completed-item .date {
+            font-size: 0.75rem;
+            color: #4a4a4a;
+            margin-right: 0.5rem;
         }
         
         .admin-view {
@@ -582,6 +609,12 @@
             flex: 1;
             color: #e0e0e0;
             line-height: 1.4;
+        }
+        
+        .consultation-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .consultation-time {
@@ -743,7 +776,7 @@
             <div class="header">
                 <h3><span class="icon">✅</span> 기 발송건 - 누락 확인용 (<span id="completedCount">0</span>건)</h3>
             </div>
-            <p style="font-size: 0.875rem; color: #666666; margin-bottom: 1rem;">혹시 누락된 건이 있는지 확인하세요</p>
+            <p style="font-size: 0.875rem; color: #666666; margin-bottom: 1rem;">누적 보고 완료 목록</p>
             <div class="completed-list" id="completedList">
                 <!-- 동적으로 생성됨 -->
             </div>
@@ -1066,7 +1099,67 @@
             return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
         }
         
-        // 데이터 가져오기
+        // 개별 항목 삭제
+        async function deleteItem(itemId) {
+            if (!confirm('이 항목을 삭제하시겠습니까?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/consultations?id=eq.${itemId}`,
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+                
+                if (response.ok) {
+                    fetchData();
+                } else {
+                    throw new Error('삭제 실패');
+                }
+            } catch (error) {
+                console.error('삭제 실패:', error);
+                alert('삭제에 실패했습니다.');
+            }
+        }
+        
+        // 관리자 페이지에서 개별 항목 삭제
+        async function deleteAdminItem(itemId) {
+            if (!confirm('이 항목을 삭제하시겠습니까?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/consultations?id=eq.${itemId}`,
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+                
+                if (response.ok) {
+                    fetchAdminData();
+                } else {
+                    throw new Error('삭제 실패');
+                }
+            } catch (error) {
+                console.error('삭제 실패:', error);
+                alert('삭제에 실패했습니다.');
+            }
+        }
+        
+        // 데이터 가져오기 (누적 데이터)
         async function fetchData() {
             if (!currentTeam) return;
             
@@ -1074,12 +1167,9 @@
             btn.classList.add('rotating');
             
             try {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                // 팀별로 필터링된 데이터 가져오기
+                // 팀별로 필터링된 모든 데이터 가져오기 (날짜 제한 없음)
                 const response = await fetch(
-                    `${SUPABASE_URL}/rest/v1/consultations?team=eq.${encodeURIComponent(currentTeam)}&created_at=gte.${today.toISOString()}&order=created_at.desc`,
+                    `${SUPABASE_URL}/rest/v1/consultations?team=eq.${encodeURIComponent(currentTeam)}&order=created_at.desc`,
                     {
                         headers: {
                             'apikey': SUPABASE_ANON_KEY,
@@ -1105,18 +1195,15 @@
             }
         }
         
-        // 관리자 데이터 가져오기
+        // 관리자 데이터 가져오기 (누적 데이터)
         async function fetchAdminData() {
             const btn = document.getElementById('adminRefreshBtn');
             btn.classList.add('rotating');
             
             try {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                // 모든 팀의 데이터 가져오기
+                // 모든 팀의 모든 데이터 가져오기 (날짜 제한 없음)
                 const response = await fetch(
-                    `${SUPABASE_URL}/rest/v1/consultations?created_at=gte.${today.toISOString()}&order=created_at.desc`,
+                    `${SUPABASE_URL}/rest/v1/consultations?order=created_at.desc`,
                     {
                         headers: {
                             'apikey': SUPABASE_ANON_KEY,
@@ -1335,6 +1422,14 @@
             }
         }
         
+        // 날짜 포맷팅 함수
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            return `${month}/${day}`;
+        }
+        
         // 일반 팀 UI 업데이트
         function updateUI() {
             // 미보고 건
@@ -1373,8 +1468,12 @@
                 
                 const listHTML = completedReports.map(item => `
                     <div class="completed-item">
-                        ${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건
-                        <span class="time">(${new Date(item.reported_at || item.created_at).toLocaleTimeString('ko-KR')})</span>
+                        <div class="completed-item-text">
+                            <span class="date">[${formatDate(item.created_at)}]</span>
+                            ${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건
+                            <span class="time">(${new Date(item.reported_at || item.created_at).toLocaleTimeString('ko-KR')})</span>
+                        </div>
+                        <button class="btn-delete-item" onclick="deleteItem('${item.id}')">삭제</button>
                     </div>
                 `).join('');
                 
@@ -1446,11 +1545,15 @@
                     adminViewHTML += `
                         <div class="consultation-item">
                             <div class="consultation-text">
+                                <span class="date" style="color: #4a4a4a; font-size: 0.75rem;">[${formatDate(item.created_at)}]</span>
                                 ${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건
                                 <span class="status-label pending">미보고</span>
                             </div>
-                            <div class="consultation-time">
-                                ${new Date(item.created_at).toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'})}
+                            <div class="consultation-meta">
+                                <div class="consultation-time">
+                                    ${new Date(item.created_at).toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'})}
+                                </div>
+                                <button class="btn-delete-item" onclick="deleteAdminItem('${item.id}')">삭제</button>
                             </div>
                         </div>
                     `;
@@ -1492,11 +1595,15 @@
                     adminViewHTML += `
                         <div class="consultation-item" style="opacity: 0.7;">
                             <div class="consultation-text">
+                                <span class="date" style="color: #4a4a4a; font-size: 0.75rem;">[${formatDate(item.created_at)}]</span>
                                 ${item.phone_number} / ${item.type} / ${item.recruiter} / ${item.consultant_name} 건
                                 <span class="status-label reported">보고완료</span>
                             </div>
-                            <div class="consultation-time">
-                                ${new Date(item.reported_at || item.created_at).toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'})}
+                            <div class="consultation-meta">
+                                <div class="consultation-time">
+                                    ${new Date(item.reported_at || item.created_at).toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'})}
+                                </div>
+                                <button class="btn-delete-item" onclick="deleteAdminItem('${item.id}')">삭제</button>
                             </div>
                         </div>
                     `;
