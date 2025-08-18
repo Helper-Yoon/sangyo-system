@@ -751,12 +751,15 @@
             </div>
         </div>
         
-        <!-- 전화번호 입력 -->
+        <!-- 계약번호 입력 -->
         <div class="card">
-            <h2 style="margin-bottom: 1rem;"><span class="icon">📞</span> 상담 등록</h2>
+            <h2 style="margin-bottom: 1rem;"><span class="icon">📝</span> 상담 등록</h2>
             <div class="input-group">
-                <input type="tel" id="phoneInput" placeholder="전화번호 입력 (010-0000-0000)" maxlength="13">
+                <input type="text" id="phoneInput" placeholder="계약번호 입력 (예: AJD20240823001192)" maxlength="20">
                 <button id="addBtn" onclick="addConsultation()">등록</button>
+            </div>
+            <div id="inputError" style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem; display: none;">
+                ⚠️ 전화번호는 입력할 수 없습니다. 계약번호를 입력해주세요.
             </div>
         </div>
         
@@ -1037,9 +1040,19 @@
                 const newPhoneInput = phoneInput.cloneNode(true);
                 phoneInput.parentNode.replaceChild(newPhoneInput, phoneInput);
                 
-                // 새 이벤트 리스너 추가
+                // 새 이벤트 리스너 추가 - 계약번호 검증
                 newPhoneInput.addEventListener('input', function(e) {
-                    e.target.value = formatPhoneNumber(e.target.value);
+                    // 전화번호 패턴 체크
+                    const value = e.target.value;
+                    const phonePattern = /^[0-9]{3}[-\s]?[0-9]{3,4}[-\s]?[0-9]{4}$/;
+                    const hasPhoneChars = /^[0-9\-\s]*$/.test(value) && value.replace(/[\-\s]/g, '').length >= 10;
+                    
+                    if (phonePattern.test(value.replace(/[\-\s]/g, '')) || hasPhoneChars) {
+                        document.getElementById('inputError').style.display = 'block';
+                        e.target.value = '';
+                    } else {
+                        document.getElementById('inputError').style.display = 'none';
+                    }
                 });
                 
                 newPhoneInput.addEventListener('keypress', function(e) {
@@ -1089,14 +1102,6 @@
             
             showNameDisplay();
             alert(`${currentTeam} 상담사 이름이 "${consultantName}"(으)로 설정되었습니다`);
-        }
-        
-        // 전화번호 형식화
-        function formatPhoneNumber(value) {
-            const numbers = value.replace(/[^0-9]/g, '');
-            if (numbers.length <= 3) return numbers;
-            if (numbers.length <= 7) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-            return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
         }
         
         // 개별 항목 삭제
@@ -1239,13 +1244,36 @@
             }
         }
         
+        // 계약번호 유효성 검사
+        function isValidContractNumber(value) {
+            // 계약번호 패턴: AJD + 숫자들
+            const contractPattern = /^[A-Z]{2,4}[0-9]{10,15}$/;
+            return contractPattern.test(value);
+        }
+        
+        // 전화번호 패턴 검사
+        function isPhoneNumber(value) {
+            const cleanValue = value.replace(/[\-\s]/g, '');
+            const phonePattern = /^0[0-9]{9,10}$/;
+            return phonePattern.test(cleanValue);
+        }
+        
         // 상담 추가
         async function addConsultation() {
             const phoneInput = document.getElementById('phoneInput');
             const addBtn = document.getElementById('addBtn');
             
-            if (!phoneInput.value || phoneInput.value.length < 12) {
-                alert('올바른 전화번호를 입력해주세요');
+            // 전화번호 패턴 체크
+            if (isPhoneNumber(phoneInput.value)) {
+                document.getElementById('inputError').style.display = 'block';
+                alert('전화번호는 입력할 수 없습니다. 계약번호를 입력해주세요.');
+                phoneInput.value = '';
+                return;
+            }
+            
+            // 계약번호 유효성 검사
+            if (!phoneInput.value || !isValidContractNumber(phoneInput.value)) {
+                alert('올바른 계약번호를 입력해주세요 (예: AJD20240823001192)');
                 return;
             }
             
@@ -1278,7 +1306,7 @@
                             'Prefer': 'return=representation'
                         },
                         body: JSON.stringify({
-                            phone_number: phoneInput.value,
+                            phone_number: phoneInput.value,  // DB 필드명은 유지
                             consultant_name: consultantName,
                             type: '상담요청 → 가망상담',
                             recruiter: '유치자공란',
@@ -1290,6 +1318,7 @@
                 
                 if (response.ok) {
                     phoneInput.value = '';
+                    document.getElementById('inputError').style.display = 'none';
                     await fetchData();
                 } else {
                     throw new Error('저장 실패');
